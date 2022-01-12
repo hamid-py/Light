@@ -1,0 +1,24 @@
+service:
+  type: NodePort
+  ports:
+   - port: 80
+     targetPort: 80
+     name: http
+     protocol: TCP
+     nodePort: 30096
+probeEnable: false
+env:
+  name: deployment
+  profile: Development
+
+resources: 
+   limits:
+     cpu: 1000m
+     memory: 1048Mi
+   requests:
+     cpu: 100m
+     memory: 100Mi
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 2

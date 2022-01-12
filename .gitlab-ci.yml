@@ -1,0 +1,5 @@
+include:
+  - project: 'okala/devops/cicd'
+    ref: master
+    file: 'projects/callcenter/sticker.yml'
+

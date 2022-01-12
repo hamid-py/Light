@@ -6,3 +6,5 @@
 - from setting, DATABASE define the database configuration(by default it is sqllite)
 - with command "python manage.py createsuperuser" create admin user.
 - with command "python manage.py runserver" run server
+-  python manage.py makemigrations
+-  python manage.py migrate

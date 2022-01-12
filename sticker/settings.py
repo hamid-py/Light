@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-6a9v0)va(i&x5$oe+ci+zi1nd@7bdca6x1a%7a9_e1fi)ou3x+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -81,11 +81,11 @@ WSGI_APPLICATION = 'sticker.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_name',
-        'USER': 'db_user',
-        'PASSWORD': 'db_user_password',
+        'NAME': 'sticker',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
         'HOST': '',
-        'PORT': 'db_port_number',
+        'PORT': '5432',
     }
 }
 

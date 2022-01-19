@@ -167,6 +167,20 @@ def start_rest(request):
 
     allowed_number_of_rest = user.group_user.first().principal.limit_number_of_rest_number
     group = user.group_user.last().group_type
+    rest_start_list = StartRest.objects.filter(in_rest_flag=1)
+    rest_start_user = [i.user for i in rest_start_list]
+    if IN_rest_list:
+        for i in IN_rest_list:
+            if i not in rest_start_user:
+                IN_rest_list.remove(i)
+    if OUT_rest_list:
+        for i in OUT_rest_list:
+            if i not in rest_start_user:
+                OUT_rest_list.remove(i)
+    if CRM_rest_list:
+        for i in CRM_rest_list:
+            if i not in rest_start_user:
+                CRM_rest_list.remove(i)
     if group == 'IN':
         group_list_name = IN_rest_list
     elif group == 'OUT':
@@ -221,6 +235,7 @@ def end_rest(request, pk):
             a.save()
             if user_object in group_list_name:
                 EndRest.objects.create(user=user, start_rest=user.start.last())
+
                 group_list_name.remove(user_object)
             else:
                 return redirect('start_rest')
@@ -243,6 +258,9 @@ def end_rest(request, pk):
                 total_error_time=f'{extra_minute_time} minutes {extra_seconds_time} seconds',
                 total_error_seconds=extra_time_seconds,
                 total_rest_seconds=rest_time.seconds)
+            user_start_rest = user.start.last()
+            user_start_rest.in_rest_flag = 0
+            user_start_rest.save()
             return redirect('start_rest')
         if request.user in [name.user for name in IN_rest_list + OUT_rest_list + CRM_rest_list]:
             return render(request, 'result/end.html', context)

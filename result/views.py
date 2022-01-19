@@ -27,7 +27,6 @@ IN_rest_list = []
 OUT_rest_list = []
 CRM_rest_list = []
 
-
 class LoginAdmin(LoginView):
     template_name = 'result/Login.html'
 
@@ -169,6 +168,8 @@ def start_rest(request):
     group = user.group_user.last().group_type
     rest_start_list = StartRest.objects.filter(in_rest_flag=1)
     rest_start_user = [i.user for i in rest_start_list]
+    print(rest_start_list, 'start list++1')
+    print(IN_rest_list+OUT_rest_list+CRM_rest_list, '3list together ++2')
     if IN_rest_list:
         for i in IN_rest_list:
             if i not in rest_start_user:
@@ -181,6 +182,8 @@ def start_rest(request):
         for i in CRM_rest_list:
             if i not in rest_start_user:
                 CRM_rest_list.remove(i)
+    print(rest_start_list, 'start list++3')
+    print(rest_start_user, 'rest start user++4')
     if group == 'IN':
         group_list_name = IN_rest_list
     elif group == 'OUT':
@@ -243,6 +246,10 @@ def end_rest(request, pk):
             rest_time = user.end.last().end_rest - user.end.last().start_rest.start_rest
             minute_time = rest_time.seconds // 60
             seconds_time = rest_time.seconds % 60
+            user_start_rest = user.start.last()
+            user_start_rest.in_rest_flag = 0
+            user_start_rest.save()
+            print(user_start_rest.in_rest_flag, 'in rest flag-----1')
             if rest_time > allowed_rest_time:
                 extra_time = rest_time - allowed_rest_time
                 extra_time_seconds = extra_time.seconds
@@ -258,9 +265,8 @@ def end_rest(request, pk):
                 total_error_time=f'{extra_minute_time} minutes {extra_seconds_time} seconds',
                 total_error_seconds=extra_time_seconds,
                 total_rest_seconds=rest_time.seconds)
-            user_start_rest = user.start.last()
-            user_start_rest.in_rest_flag = 0
-            user_start_rest.save()
+
+
             return redirect('start_rest')
         if request.user in [name.user for name in IN_rest_list + OUT_rest_list + CRM_rest_list]:
             return render(request, 'result/end.html', context)

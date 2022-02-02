@@ -191,8 +191,8 @@ def start_rest(request):
         if i.user not in IN_rest_list + OUT_rest_list + CRM_rest_list:
             i.delete()
 
-    print(rest_start_list, 'start list++3')
-    print(rest_start_user, 'rest start user++4')
+    # print(rest_start_list, 'start list++3')
+    # print(rest_start_user, 'rest start user++4')
     if group == 'IN':
         group_list_name = IN_rest_list
     elif group == 'OUT':
@@ -330,6 +330,15 @@ def report_export(request):
 
     group = user.group_user.last().group_type
     user_in_rest = IN_rest_list + OUT_rest_list + CRM_rest_list
+    user_in_rest_with_time = []
+    if user_in_rest:
+        for i in user_in_rest:
+            now = datetime.now(timezone.utc)
+            rest_time = now - i.start.last().start_rest
+
+            allowed_rest_time = i.membership_user.last().group.principal.limit_rest_time
+            user_in_rest_with_time.append(f'{i}({rest_time})')
+            # print(rest_time, 'in rest start******************************++++++++++++++++++++++++++++++++')
 
     if int(user.position) > 0:
         user_history_list = []
@@ -363,7 +372,7 @@ def report_export(request):
                         report['number_of_rest'] = number_of_rest
                         report['user'] = user.user
                         user_history_list.append(report)
-        context = {'history': user_history_list, 'rest': user_in_rest}
+        context = {'history': user_history_list, 'rest': user_in_rest_with_time}
 
         return render(request, 'result/report.html', context)
     return HttpResponse("<p><h2>You don't have permission to access this page<h2></p>")

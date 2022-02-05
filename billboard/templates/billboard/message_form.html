@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
-          <meta charset="utf-8">
+    <title>message form</title>
+              <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -44,46 +44,12 @@
 }
     </style>
 </head>
-<body >
-{% block title %}  {% endblock %}
-<br>
+<body>
+<form method="POST" action=""  enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="submit">
+</form>
 
-{% block content %}
-{% if user.is_authenticated %}
-
-
-  <h2 style="color:Gray;">Hi {{ user.username }}!</h2>
-
-
-
-<ul>
-<div>
-    {%if position > 0 %}
-         <p><a href="{%url 'history'%}">History</a></p>
-
-        <p><a href="{% url 'group' %}">Group</a></p>
-         <p><a href="{%url 'membership'%}">Membership</a></p>
-
-        <p><a href="{% url 'user' %}">Users</a></p>
-        <p><a href="{% url 'report' %}">Report</a></p>
-
-    {%else%}
-    <p><a href="{% url 'start_rest' %}">Rest</a></p>
-    {%endif%}
-
-
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">Log In</a>
-{% endif %}
-<!--{% if position > 1%}-->
-<!-- <p><a href="{% url 'excel' %}">Excel</a></p>-->
-<!--{% endif %}-->
-<br>
-  <p ><a style="color:red" href="/admin/logout/">Log Out</a></p>
-    <p><a href="{% url 'change_password' %}"  class="btn btn-default" role="button">Change Password</a></p>
-{% endblock %}
-</div>
-    </ul>
 </body>
 </html>

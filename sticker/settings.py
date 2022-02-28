@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'result.apps.ResultConfig',
     'billboard.apps.BillboardConfig',
+    'QC.apps.QcConfig',
 ]
 
 MIDDLEWARE = [

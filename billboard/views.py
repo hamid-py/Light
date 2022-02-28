@@ -7,7 +7,7 @@ from .form import MessageForm, ConfigurationForm
 from .models import Message
 
 
-# Create your views here.
+
 
 
 def billboard(request):

@@ -32,7 +32,6 @@ OUT_rest_list = []
 CRM_rest_list = []
 
 
-
 class LoginAdmin(LoginView):
     template_name = 'result/Login.html'
 
@@ -352,7 +351,7 @@ def report_export(request):
                     number_of_rest = 0
                     report = {}
                     for history in user.history.filter(created_date__gte=datetime.today() -
-                                                                         timedelta(hours=delta_hours - 3.5 )) \
+                                                                         timedelta(hours=delta_hours - 3.5)) \
                             .filter(user__membership_user__group__group_type=group):
                         total_seconds += history.total_rest_seconds
                         total_error += history.total_error_seconds
@@ -406,7 +405,7 @@ def excelreport(request):
                     number_of_rest = 0
                     report = {}
                     for history in user.history.filter(created_date__gte=datetime.today() -
-                                                                         timedelta(hours=delta_hours - 3.5 )):
+                                                                         timedelta(hours=delta_hours - 3.5)):
                         total_seconds += history.total_rest_seconds
                         total_error += history.total_error_seconds
                         if history.total_error_seconds:

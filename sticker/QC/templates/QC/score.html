@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>score</title>
+
+
+
+</head>
+<body>
+
+<!--<script>-->
+<!--  $(function () {-->
+<!--    $("#datetimepicker1").datetimepicker({-->
+<!--      format: 'DD/MM/YYYY HH:mm',-->
+<!--    });-->
+<!--  });-->
+<!--</script>-->
+<form action={%url 'score'%} method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+<!--<h1>{{context}}</h1>-->
+</body>
+</html>

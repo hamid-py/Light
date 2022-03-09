@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail</title>
+</head>
+
+<body>
+<p>نام اپراتور:{{context.agent_name}}</p>
+<p>نام سرتیم:{{context.team_leader}}</p>
+<p>نام لیدر:{{context.leader}}</p>
+
+<p>
+<h3>خطا</h3>
+{%for i in indicators%}
+<li>{{i}}</li>
+</p>
+{%endfor%}
+
+<p>نمره:{{context.voice.score}}</p>
+<p>نمره از صد:{{context.voice.get_score_from_hundred}}</p>
+
+</body>
+</html>

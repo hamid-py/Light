@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>History</title>
+</head>
+<body>
+{%for agent in context%}
+<ul>
+    <li><a href={%url "agent_detail" agent.id%}>{{agent.agent}}</a></li>
+
+</ul>
+{%endfor%}
+
+</body>
+</html>

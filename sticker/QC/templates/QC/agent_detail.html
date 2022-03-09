@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail</title>
+</head>
+<body>
+<h3>{{context.agent}}</h3>
+<p>
+<li>{{number}} :تعداد ویس</li>
+<li>{{context.number_of_remark}} :تعداد تذکر</li>
+<li>{{context.number_of_warning}} :تعداد اخطار</li>
+<li>{{context.number_of_retraining}} :تعداد آموزش مجدد</li>
+</p>
+<h3>خطاها</h3>
+{%for i in indicators%}
+{%for key, value in i.items%}
+<li>{{key}}: {{value}}</li>
+{%endfor%}
+{%endfor%}
+<form action="{%url 'agent_detail' context.id%}" method="POST">
+    {% csrf_token %}
+      <label for="start">start</label><br>
+      <input type="datetime-local" value="start" name="start" id="start"><br><br>
+      <label for="end">end</label><br>
+      <input type="datetime-local" value="end" name="end" id="end"><br><br>
+  <input type="submit" value="Submit">
+</form>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>history</title>
+</head>
+<body>
+{%for i in context%}
+<li><a href="{%url 'detail_score' i.id%}">{{i}}</a> <a href="{%url 'delete_voice' i.id%}">delete</a></li>
+{%endfor%}
+<h3>{{context|length}} :تعداد</h3>
+<br><br>
+<form action="/qc/history/" method="POST">
+    {% csrf_token %}
+      <label for="start">start</label><br>
+      <input type="datetime-local" value="start" name="start" id="start"><br><br>
+      <label for="end">end</label><br>
+      <input type="datetime-local" value="end" name="end" id="end"><br><br>
+<!--    {{form}}-->
+      <select id="qc" name="qc">
+          {%for i in qc%}
+    <option value={{i}}>{{i}}</option>
+          {%endfor%}
+  </select><br><br>
+
+
+
+  <input type="submit" value="Submit">
+
+</form>
+</body>
+</html>

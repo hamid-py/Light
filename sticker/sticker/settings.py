@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'result.apps.ResultConfig',
     'billboard.apps.BillboardConfig',
     'QC.apps.QcConfig',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [

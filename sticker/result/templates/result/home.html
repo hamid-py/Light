@@ -57,7 +57,7 @@
 
 
 <ul>
-<div>
+<div class="container">
     {%if position > 0 %}
          <p><a href="{%url 'history'%}">History</a></p>
 
@@ -70,7 +70,9 @@
     {%else%}
     <p><a href="{% url 'start_rest' %}">Rest</a></p>
     {%endif%}
-
+    {%if user.username in qc%}
+    <p><a href="qc">Qc</a></p>
+    {%endif%}
 
 {% else %}
   <p>You are not logged in</p>

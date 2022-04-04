@@ -25,7 +25,7 @@
 
                div {
   background-color: lightgrey;
-  width: 250px;
+  width: 400px;
   border: 15px solid green;
   padding: 10px;
   margin:0px;
@@ -51,13 +51,11 @@
     </style>
 </head>
 <body>
-<ul>
-<div>
-    {%if "hamid" in  request.online_now%}
-        yes
 
-        {%endif%}
-    <ul>
+
+
+<div class="container">
+
     {%if group_list%}
 
 {%for group in group_list%}
@@ -84,9 +82,10 @@
 
 <br>
 <br>
-<div class>
+<div class="container">
     <a href="{%url 'home'%}"  class="btn btn-default" role="button">Home</a>
-    </div>
-    </ul>
+</div>
+
+
 </body>
 </html>

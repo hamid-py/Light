@@ -103,10 +103,11 @@ class Indicators(models.Model):
     negotiation = models.BooleanField(default=False)
     final_sentences = models.BooleanField(default=False)
 
+    comment = models.CharField(max_length=500, null=True, blank=True)
     voice = models.OneToOneField(Voice, on_delete=models.CASCADE,
-                                 related_name='voice', limit_choices_to={'created_date__gte':
-                                                                             recent_time - datetime.timedelta(
-                                                                                 minutes=1)})
+                                 related_name='voice', null=True, limit_choices_to={'created_date__gte':
+                                                                                        recent_time - datetime.timedelta(
+                                                                                            minutes=1)})
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     score = models.PositiveIntegerField(null=True, blank=True)
@@ -131,5 +132,20 @@ class Indicators(models.Model):
 
     @property
     def get_score_from_hundred(self):
-        self.score_from_hundred = self.get_score * 5
+        self.score_from_hundred = 50 - sum([int(self.starting_sentences) * 3, int(self.say_customer_name) * 2,
+                                            int(self.speaking_tone) * 4,
+                                            int(self.respect_to_customer) * 3,
+                                            int(self.anger_management) * 3, int(self.proper_interaction) * 2,
+                                            int(self.do_not_use_negative_verbs) * 1,
+                                            int(self.effective_listening) * 4, int(self.interrupt_customer_talk) * 2,
+                                            int(self.correct_customer_guidance) * 4,
+                                            int(self.proper_registration_complaint) * 4,
+                                            int(self.familiarity_with_application_site) * 3,
+                                            int(self.familiarity_with_okala_panel) * 3, int(self.proper_hold) * 1,
+                                            int(self.observe_hold_law) * 1,
+                                            int(self.unnecessary_referral_to_another_unit) * 2,
+                                            int(self.express_unnecessary_issues) * 1,
+                                            int(self.call_duration_management) * 2,
+                                            int(self.negotiation) * 3,
+                                            int(self.final_sentences) * 2])
         return self.score_from_hundred

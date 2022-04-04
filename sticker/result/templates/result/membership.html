@@ -23,7 +23,7 @@
             }
                div {
   background-color: lightgrey;
-  width: 250px;
+  width: 400px;
   border: 15px solid green;
   padding: 10px;
   margin: 00px;
@@ -50,7 +50,7 @@
 </head>
 <ul>
 <body>
-<div>
+<div class="container">
 {%for member in members%}
     <li><a href="{%url 'update_membership' member.id%}">{{member}}</a></li>
     <br>
@@ -59,7 +59,7 @@
     </div>
 <br>
 <br>
-<div>
+<div class="container">
    <a href="{%url 'home'%}"  class="btn btn-default" role="button">Home</a>
     </div>
 

@@ -27,6 +27,8 @@ from django.shortcuts import render
 from .forms import PrincipalForm, MembershipForm, PasswordChangeCustomForm
 from django.utils.timezone import activate
 
+from QC.models import QcOperator
+
 IN_rest_list = []
 OUT_rest_list = []
 CRM_rest_list = []
@@ -311,6 +313,12 @@ def home(request):
         user = CustomUser.objects.get(user=request.user.id)
         position = int(user.position)
         context = {'position': position}
+        qc_list = []
+        qc = QcOperator.objects.all()
+        for i in qc:
+            qc_list.append(i.qc_agent.user.username)
+        context['qc'] = qc_list
+
 
         return render(request, 'result/home.html', context)
     return redirect('login')
@@ -455,3 +463,5 @@ def excelreport(request):
 
         return FileResponse(buffer, as_attachment=True, filename='report.xlsx')
     return HttpResponse("<p><h2>You don't have permission to access this page<h2></p>")
+
+

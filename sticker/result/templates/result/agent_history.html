@@ -51,7 +51,7 @@
 <ul>
 <body>
 {%for history in agenthistory_list%}
-    <div>
+    <div class="container">
 <p><li>{{history}}</li></p><h4>rest time: {{history.total_rest_time}}</h4>
 <h4>error time: {{history.total_error_time}}</h4>
 <h4>date:{{history.created_date}}</h4><br>
@@ -59,7 +59,7 @@
 {%endfor%}
 <br>
 <br>
-<div>
+<div class="container">
     <a href="{%url 'home'%}"  class="btn btn-default" role="button">Home</a>
     </div>
 </body>

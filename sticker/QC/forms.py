@@ -1,3 +1,5 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 from django.forms import ModelForm
 from django import forms
 from django.utils.translation import ugettext_lazy as _
@@ -29,7 +31,7 @@ class QcScoreForm(ModelForm):
                   'familiarity_with_application_site', 'familiarity_with_okala_panel', 'proper_hold',
                   'observe_hold_law',
                   'unnecessary_referral_to_another_unit', 'express_unnecessary_issues', 'call_duration_management',
-                  'negotiation', 'final_sentences']
+                  'negotiation', 'final_sentences', 'comment']
         labels = {
             'voice': _("ویس"),
             'starting_sentences': _("بیان جملات شروع"),
@@ -47,14 +49,23 @@ class QcScoreForm(ModelForm):
             'familiarity_with_okala_panel': _("آشنایی با پنل اکالا"),
             'proper_hold': _("hold مناسب"),
             'observe_hold_law': _("hold رعایت قانون"),
-            'unnecessary_referral_to_another_unit': _("ارجاع به مورد به واحد دیگر"),
+            'unnecessary_referral_to_another_unit': _("ارجاع بی مورد به واحد دیگر"),
             'express_unnecessary_issues': _("بیان مسائل غیر ضروری"),
             'call_duration_management': _("مدیریت زمان مکالمه/سکوت بی مورد"),
             'negotiation': _("مذاکره"),
             'final_sentences': _("بیان جملات پایانی"),
+            'comment': _("توضیحات"),
         }
 
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': 5, 'cols': 30})
+        }
 
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.helper = FormHelper()
+            self.helper.form_method = 'post'
+            self.helper.add_input(Submit('submit', 'submit'))
 class VoiceForm(ModelForm):
     class Meta:
         model = Voice
@@ -70,3 +81,9 @@ class VoiceForm(ModelForm):
             'voice_date': _("تاریخ تماس")
 
         }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.helper = FormHelper()
+            self.helper.form_method = 'post'
+            self.helper.add_input(Submit('submit', 'submit'))

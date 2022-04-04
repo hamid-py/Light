@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 
 from . import views, forms
 
@@ -19,6 +19,7 @@ urlpatterns = [
     path('login', views.LoginAdmin.as_view(), name='login'),
     path('change_password', views.change_password, name='change_password'),
     path('report', views.report_export, name='report'),
-    path('excel_report', views.excelreport, name='excel')
+    path('excel_report', views.excelreport, name='excel'),
+
 
 ]

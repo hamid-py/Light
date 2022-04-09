@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-6a9v0)va(i&x5$oe+ci+zi1nd@7bdca6x1a%7a9_e1fi)ou3x+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
+DEBUG = True
 
 
 ALLOWED_HOSTS = ['*']
@@ -83,23 +83,23 @@ WSGI_APPLICATION = 'sticker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-
-        'NAME': 'callcenter',
-        'USER': 'callcenter',
-        'PASSWORD': 'qwertZXCVBasdfg',
-        'HOST': '172.31.38.194',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#
+#         'NAME': 'callcenter',
+#         'USER': 'callcenter',
+#         'PASSWORD': 'qwertZXCVBasdfg',
+#         'HOST': '172.31.38.194',
+#         'PORT': '5432',
+#     }
+# }
 
 
 

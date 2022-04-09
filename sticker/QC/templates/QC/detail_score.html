@@ -42,12 +42,14 @@
       .row.content {height: auto;}
     }
 
-    li {text-align:right;}
+    li {text-align:right;
+    direction: rtl;}
   </style>
     <title>Detail</title>
 </head>
 
 <body>
+<div class="container">
 <div class="row content">
 <div class="col-sm-3 sidenav">
   <blockquote class="blockquote">
@@ -78,7 +80,8 @@
 <li class="list-group-item list-group-item-success">نمره</li>
 <li class="list-group-item">توضیحات: {{comment}}</li>
 <li class="list-group-item">نمره: {{context.voice.score}}</li>
-<li class="list-group-item">نمره از صد: {{context.voice.get_score_from_hundred}}</li>
+<li class="list-group-item">نمره از پنجاه: {{context.voice.get_score_from_hundred}}</li>
+<li class="list-group-item" >تاریخ: {{context.created_date}}</li>
     </blockquote>
 <br><br>
 
@@ -87,7 +90,7 @@
 
 
 </div>
-
+</div>
 
 </body>
 </html>

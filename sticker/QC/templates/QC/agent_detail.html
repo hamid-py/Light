@@ -46,6 +46,7 @@
     <title>Detail</title>
 </head>
 <body>
+<div class="container" style="border-style: solid;">
 <div class="container-fluid">
 <div class="row content">
     <div class="col-sm-3 sidenav">
@@ -73,7 +74,7 @@
             <br>
 <a href="{%url 'qc'%}"  class="btn btn-default" role="button">Home</a>
     </div>
-<div class="col-sm-4">
+<div class="col-sm-4" style="background-color:white">
 {%for i in each%}
     <ul>
         <hr>
@@ -87,6 +88,7 @@
 
     </div>
 </div>
+    </div>
 </div>
 </body>
 </html>

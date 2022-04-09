@@ -9,9 +9,13 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+<<<<<<< HEAD
 import os
 
 from django.utils.timezone import activate
+=======
+
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +28,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-6a9v0)va(i&x5$oe+ci+zi1nd@7bdca6x1a%7a9_e1fi)ou3x+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+<<<<<<< HEAD
 DEBUG = True
+=======
+DEBUG = False
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
 ALLOWED_HOSTS = ['*']
 
@@ -37,10 +45,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
     'result.apps.ResultConfig',
     'billboard.apps.BillboardConfig',
     'QC.apps.QcConfig',
     'crispy_forms',
+=======
+    'result.apps.ResultConfig'
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 ]
 
 MIDDLEWARE = [
@@ -86,6 +98,7 @@ WSGI_APPLICATION = 'sticker.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+<<<<<<< HEAD
         'NAME': 'callcenter',
         'USER': 'callcenter',
         'PASSWORD': 'qwertZXCVBasdfg',
@@ -96,6 +109,16 @@ DATABASES = {
 
 
 
+=======
+        'NAME': 'db_name',
+        'USER': 'db_user',
+        'PASSWORD': 'db_user_password',
+        'HOST': '',
+        'PORT': 'db_port_number',
+    }
+}
+
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -119,14 +142,22 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+<<<<<<< HEAD
 TIME_ZONE = 'Asia/Tehran'
+=======
+TIME_ZONE = 'UTC'
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
+<<<<<<< HEAD
 activate(TIME_ZONE)
+=======
+
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -139,6 +170,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AUTH_USER_MODEL = 'result.CustomUser'  # new
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+<<<<<<< HEAD
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a

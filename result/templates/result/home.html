@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+<<<<<<< HEAD
     <title>Home</title>
+=======
+    <title>Title</title>
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
           <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -57,7 +61,11 @@
 
 
 <ul>
+<<<<<<< HEAD
 <div class="container">
+=======
+<div>
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
     {%if position > 0 %}
          <p><a href="{%url 'history'%}">History</a></p>
 
@@ -70,9 +78,13 @@
     {%else%}
     <p><a href="{% url 'start_rest' %}">Rest</a></p>
     {%endif%}
+<<<<<<< HEAD
     {%if user.username in qc%}
     <p><a href="qc">Qc</a></p>
     {%endif%}
+=======
+
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
 {% else %}
   <p>You are not logged in</p>
@@ -83,9 +95,17 @@
 <!--{% endif %}-->
 <br>
   <p ><a style="color:red" href="/admin/logout/">Log Out</a></p>
+<<<<<<< HEAD
     <p><a href="{% url 'change_password' %}"  class="btn btn-default" role="button">Change Password</a></p>
+=======
+  <p><a href="{% url 'change_password' %}"  class="btn btn-default" role="button">Change Password</a></p>
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 {% endblock %}
 </div>
     </ul>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a

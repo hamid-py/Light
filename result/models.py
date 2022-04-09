@@ -130,7 +130,10 @@ class StartRest(models.Model):
     start_rest = models.DateTimeField(auto_now=True)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
+<<<<<<< HEAD
     in_rest_flag = models.IntegerField(default=1)
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
     def __str__(self):
         return f'{self.user} start rest time'

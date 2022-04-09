@@ -25,7 +25,11 @@
 
                div {
   background-color: lightgrey;
+<<<<<<< HEAD
   width: 400px;
+=======
+  width: 250px;
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
   border: 15px solid green;
   padding: 10px;
   margin:0px;
@@ -51,11 +55,21 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
 
 
 
 <div class="container">
 
+=======
+<ul>
+<div>
+    {%if "hamid" in  request.online_now%}
+        yes
+
+        {%endif%}
+    <ul>
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
     {%if group_list%}
 
 {%for group in group_list%}
@@ -82,10 +96,17 @@
 
 <br>
 <br>
+<<<<<<< HEAD
 <div class="container">
     <a href="{%url 'home'%}"  class="btn btn-default" role="button">Home</a>
 </div>
 
 
+=======
+<div class>
+    <a href="{%url 'home'%}"  class="btn btn-default" role="button">Home</a>
+    </div>
+    </ul>
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 </body>
 </html>

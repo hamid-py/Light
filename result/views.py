@@ -1,4 +1,5 @@
 import string
+<<<<<<< HEAD
 from datetime import datetime, timezone, date, timedelta, time
 from urllib import request
 
@@ -7,6 +8,14 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+=======
+from datetime import datetime, timezone, date, timedelta
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+
+from django.contrib.auth.decorators import login_required
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 
@@ -25,9 +34,12 @@ from django.views.generic.list import ListView
 from .models import CustomUser, Group, Membership, Principal, AgentHistory, StartRest, EndRest
 from django.shortcuts import render
 from .forms import PrincipalForm, MembershipForm, PasswordChangeCustomForm
+<<<<<<< HEAD
 from django.utils.timezone import activate
 
 from QC.models import QcOperator
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
 IN_rest_list = []
 OUT_rest_list = []
@@ -68,6 +80,11 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return False
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 class GroupLIstView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     login_url = 'login'
     model = Group
@@ -165,13 +182,17 @@ def update_membership_view(request, pk):
 
 
 @login_required(login_url='login')
+<<<<<<< HEAD
 @transaction.atomic
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 def start_rest(request):
     context = {'status': True}
     user = CustomUser.objects.get(user=request.user.id)
 
     allowed_number_of_rest = user.group_user.first().principal.limit_number_of_rest_number
     group = user.group_user.last().group_type
+<<<<<<< HEAD
     rest_start_list = StartRest.objects.filter(in_rest_flag=1)
     rest_start_user = [i.user for i in rest_start_list]
     # print(rest_start_list, 'start list++1')
@@ -194,6 +215,8 @@ def start_rest(request):
 
     # print(rest_start_list, 'start list++3')
     # print(rest_start_user, 'rest start user++4')
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
     if group == 'IN':
         group_list_name = IN_rest_list
     elif group == 'OUT':
@@ -229,7 +252,10 @@ def start_rest(request):
 
 
 @login_required(login_url='login')
+<<<<<<< HEAD
 @transaction.atomic
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 def end_rest(request, pk):
     user = CustomUser.objects.get(user=pk)
     context = {'status': True}
@@ -249,7 +275,10 @@ def end_rest(request, pk):
             a.save()
             if user_object in group_list_name:
                 EndRest.objects.create(user=user, start_rest=user.start.last())
+<<<<<<< HEAD
 
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
                 group_list_name.remove(user_object)
             else:
                 return redirect('start_rest')
@@ -257,10 +286,13 @@ def end_rest(request, pk):
             rest_time = user.end.last().end_rest - user.end.last().start_rest.start_rest
             minute_time = rest_time.seconds // 60
             seconds_time = rest_time.seconds % 60
+<<<<<<< HEAD
             user_start_rest = user.start.last()
             user_start_rest.in_rest_flag = 0
             user_start_rest.save()
             print(user_start_rest.in_rest_flag, 'in rest flag-----1')
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
             if rest_time > allowed_rest_time:
                 extra_time = rest_time - allowed_rest_time
                 extra_time_seconds = extra_time.seconds
@@ -276,7 +308,10 @@ def end_rest(request, pk):
                 total_error_time=f'{extra_minute_time} minutes {extra_seconds_time} seconds',
                 total_error_seconds=extra_time_seconds,
                 total_rest_seconds=rest_time.seconds)
+<<<<<<< HEAD
 
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
             return redirect('start_rest')
         if request.user in [name.user for name in IN_rest_list + OUT_rest_list + CRM_rest_list]:
             return render(request, 'result/end.html', context)
@@ -290,7 +325,10 @@ class AgentHistoryView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     login_url = 'login'
     model = AgentHistory
     template_name = 'result/agent_history.html'
+<<<<<<< HEAD
     queryset = AgentHistory.objects.filter(created_date__gte=datetime.today() - timedelta(days=1))
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
     ordering = ['-created_date', 'user']
 
@@ -313,12 +351,15 @@ def home(request):
         user = CustomUser.objects.get(user=request.user.id)
         position = int(user.position)
         context = {'position': position}
+<<<<<<< HEAD
         qc_list = []
         qc = QcOperator.objects.all()
         for i in qc:
             qc_list.append(i.qc_agent.user.username)
         context['qc'] = qc_list
 
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
         return render(request, 'result/home.html', context)
     return redirect('login')
@@ -326,6 +367,7 @@ def home(request):
 
 @login_required(login_url='login')
 def report_export(request):
+<<<<<<< HEAD
     midnight = datetime.combine(datetime.today(), time.min)
     today = datetime.today()
     dellta = today - midnight
@@ -346,6 +388,10 @@ def report_export(request):
             allowed_rest_time = i.membership_user.last().group.principal.limit_rest_time
             user_in_rest_with_time.append(f'{i}({rest_time})')
             # print(rest_time, 'in rest start******************************++++++++++++++++++++++++++++++++')
+=======
+    user = CustomUser.objects.get(user=request.user.id)
+    user_in_rest = IN_rest_list + OUT_rest_list + CRM_rest_list
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
     if int(user.position) > 0:
         user_history_list = []
@@ -358,14 +404,19 @@ def report_export(request):
                     number_of_error = 0
                     number_of_rest = 0
                     report = {}
+<<<<<<< HEAD
                     for history in user.history.filter(created_date__gte=datetime.today() -
                                                                          timedelta(hours=delta_hours - 3.5)) \
                             .filter(user__membership_user__group__group_type=group):
+=======
+                    for history in user.history.filter(created_date__gte=datetime.today() - timedelta(days=1)):
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
                         total_seconds += history.total_rest_seconds
                         total_error += history.total_error_seconds
                         if history.total_error_seconds:
                             number_of_error += 1
                         number_of_rest += 1
+<<<<<<< HEAD
                     if total_seconds:
                         total_seconds_min = total_seconds // 60
                         total_seconds_seconds = total_seconds % 60
@@ -380,6 +431,21 @@ def report_export(request):
                         report['user'] = user.user
                         user_history_list.append(report)
         context = {'history': user_history_list, 'rest': user_in_rest_with_time}
+=======
+                    total_seconds_min = total_seconds // 60
+                    total_seconds_seconds = total_seconds % 60
+                    total_error_min = total_error // 60
+                    total_error_seconds = total_error % 60
+                    report['total_seconds_min'] = total_seconds_min
+                    report['total_seconds_seconds'] = total_seconds_seconds
+                    report['total_error_min'] = total_error_min
+                    report['total_error_seconds'] = total_error_seconds
+                    report['number_of_error'] = number_of_error
+                    report['number_of_rest'] = number_of_rest
+                    report['user'] = user.user
+                    user_history_list.append(report)
+        context = {'history': user_history_list, 'rest': user_in_rest}
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
         return render(request, 'result/report.html', context)
     return HttpResponse("<p><h2>You don't have permission to access this page<h2></p>")
@@ -391,10 +457,13 @@ import xlsxwriter
 
 @login_required(login_url='login')
 def excelreport(request):
+<<<<<<< HEAD
     midnight = datetime.combine(datetime.today(), time.min)
     today = datetime.today()
     dellta = today - midnight
     delta_hours = dellta.seconds // 3600
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
     user = CustomUser.objects.get(user=request.user.id)
 
     if int(user.position) > 0:
@@ -412,13 +481,18 @@ def excelreport(request):
                     number_of_error = 0
                     number_of_rest = 0
                     report = {}
+<<<<<<< HEAD
                     for history in user.history.filter(created_date__gte=datetime.today() -
                                                                          timedelta(hours=delta_hours - 3.5)):
+=======
+                    for history in user.history.filter(created_date__gte=datetime.today() - timedelta(days=1)):
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
                         total_seconds += history.total_rest_seconds
                         total_error += history.total_error_seconds
                         if history.total_error_seconds:
                             number_of_error += 1
                         number_of_rest += 1
+<<<<<<< HEAD
                     if total_seconds:
                         total_seconds_min = total_seconds // 60
                         total_seconds_seconds = total_seconds % 60
@@ -457,11 +531,46 @@ def excelreport(request):
             # worksheet.write(f'{alphabet[i + 1]}5', report["total_error_seconds"])
             worksheet.write(f'{alphabet[i + 1]}4', report['number_of_rest'])
             worksheet.write(f'{alphabet[i + 1]}5', report['number_of_error'])
+=======
+                    total_seconds_min = total_seconds // 60
+                    total_seconds_seconds = total_seconds % 60
+                    total_error_min = total_error // 60
+                    total_error_seconds = total_error % 60
+                    report['total_seconds_min'] = total_seconds_min
+                    report['total_seconds_seconds'] = total_seconds_seconds
+                    report['total_error_min'] = total_error_min
+                    report['total_error_seconds'] = total_error_seconds
+                    report['number_of_error'] = number_of_error
+                    report['number_of_rest'] = number_of_rest
+                    report['user'] = user.user.username
+                    user_history_list.append(report)
+        date = datetime.today()
+        alphabet = list(string.ascii_uppercase)
+        worksheet.write('A1', 'user')
+        worksheet.write('A2', 'Total rest time(minute)')
+        worksheet.write('A3', 'Total rest time(second)')
+        worksheet.write('A4', 'Total error time(minute)')
+        worksheet.write('A5', 'Total error time(second)')
+        worksheet.write('A6', 'number_of_rest')
+        worksheet.write('A7', 'number_of_error')
+        worksheet.write('A8', str(date))
+        for i, report in enumerate(user_history_list):
+            worksheet.write(f'{alphabet[i + 1]}1', report['user'])
+            worksheet.write(f'{alphabet[i + 1]}2', report['total_seconds_min'])
+            worksheet.write(f'{alphabet[i + 1]}3', report['total_seconds_seconds'])
+            worksheet.write(f'{alphabet[i + 1]}4', report['total_error_min'])
+            worksheet.write(f'{alphabet[i + 1]}5', report['total_error_seconds'])
+            worksheet.write(f'{alphabet[i + 1]}6', report['number_of_rest'])
+            worksheet.write(f'{alphabet[i + 1]}7', report['number_of_error'])
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a
 
         workbook.close()
         buffer.seek(0)
 
         return FileResponse(buffer, as_attachment=True, filename='report.xlsx')
     return HttpResponse("<p><h2>You don't have permission to access this page<h2></p>")
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> e3f679a6cb149506ee61418f79b367f57380e21a

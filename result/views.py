@@ -1,12 +1,11 @@
 import string
-from datetime import datetime, timezone, date, timedelta,time
+from datetime import datetime, timezone, date, timedelta, time
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
-
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -27,6 +26,7 @@ from .forms import PrincipalForm, MembershipForm, PasswordChangeCustomForm
 IN_rest_list = []
 OUT_rest_list = []
 CRM_rest_list = []
+
 
 class LoginAdmin(LoginView):
     template_name = 'result/Login.html'
@@ -60,8 +60,6 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         if int(user.position) > 0:
             return True
         return False
-
-
 
 
 class GroupLIstView(LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -272,7 +270,6 @@ def end_rest(request, pk):
                 total_error_seconds=extra_time_seconds,
                 total_rest_seconds=rest_time.seconds)
 
-
             return redirect('start_rest')
         if request.user in [name.user for name in IN_rest_list + OUT_rest_list + CRM_rest_list]:
             return render(request, 'result/end.html', context)
@@ -302,7 +299,10 @@ class AgentHistoryView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             return True
         return False
 
+
 from QC.models import QcOperator
+
+
 @login_required(login_url='login')
 def home(request):
     if request.user.is_authenticated:
@@ -314,11 +314,14 @@ def home(request):
         for i in qc:
             qc_list.append(i.qc_agent.user.username)
         context['qc'] = qc_list
-
+        name = user.user.username.split('.')
+        if len(name) > 1:
+            context['first_name'] = name[1]
+        else:
+            context['first_name'] = name[0]
 
         return render(request, 'result/home.html', context)
     return redirect('login')
-
 
 
 @login_required(login_url='login')
@@ -351,7 +354,8 @@ def report_export(request):
                     number_of_error = 0
                     number_of_rest = 0
                     report = {}
-                    for history in user.history.filter(created_date__gte=datetime.today() - timedelta(hours=delta_hours )) \
+                    for history in user.history.filter(
+                            created_date__gte=datetime.today() - timedelta(hours=delta_hours)) \
                             .filter(user__membership_user__group__group_type=group):
                         total_seconds += history.total_rest_seconds
                         total_error += history.total_error_seconds
@@ -404,7 +408,8 @@ def excelreport(request):
                     number_of_error = 0
                     number_of_rest = 0
                     report = {}
-                    for history in user.history.filter(created_date__gte=datetime.today() - timedelta(hours=delta_hours )):
+                    for history in user.history.filter(
+                            created_date__gte=datetime.today() - timedelta(hours=delta_hours)):
                         total_seconds += history.total_rest_seconds
                         total_error += history.total_error_seconds
                         if history.total_error_seconds:
@@ -425,7 +430,7 @@ def excelreport(request):
                         user_history_list.append(report)
         date = datetime.today()
         pure_alphabet = list(string.ascii_uppercase)
-        extra_alphabet = ['A'+i for i in pure_alphabet]
+        extra_alphabet = ['A' + i for i in pure_alphabet]
         alphabet = pure_alphabet + extra_alphabet
         worksheet.write('A1', 'user')
         worksheet.write('A2', 'Total rest time')
@@ -436,7 +441,7 @@ def excelreport(request):
         worksheet.write('A5', 'number_of_error')
         worksheet.write('A6', str(date))
         for i, report in enumerate(user_history_list):
-            worksheet.write(f'{alphabet[i + 1]}1', f'{report["user"]}' )
+            worksheet.write(f'{alphabet[i + 1]}1', f'{report["user"]}')
             worksheet.write(f'{alphabet[i + 1]}2', f'{report["total_seconds_min"]} minute'
                                                    f' {report["total_seconds_seconds"]} seconds')
             # worksheet.write(f'{alphabet[i + 1]}3', report["total_seconds_seconds"])

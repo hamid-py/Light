@@ -1,6 +1,7 @@
 import datetime
 from datetime import datetime, timezone, date, timedelta, time
 
+from bokeh.embed import components
 from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.palettes import Spectral6, Spectral4, Spectral5, Cividis256, RdYlGn11, Inferno256, Magma11, Plasma11, \
     Plasma256
@@ -399,10 +400,10 @@ def plot(request):
             df = pd.concat([df, df_new])
         data = df.groupby('name')['score', 'voice'].mean()
         data_source = ColumnDataSource(data)
-        y = data_source.data['score'].tolist()
-        y2 = data_source.data['voice'].tolist()
-        y3 = [i['بیان جملات شروع'] if 'لحن صحبت با مشتری' in i else 0 for i in data_list]
-        y4 = [i['به کار بردن نام مشتری'] if 'لحن صحبت با مشتری' in i else 0 for i in data_list]
+        y = [sum(i['score'])/len(i['score']) for i in data_list]
+        y2 = [i['voice'] for i in data_list]
+        y3 = [i['بیان جملات شروع'] if 'بیان جملات شروع' in i else 0 for i in data_list]
+        y4 = [i['به کار بردن نام مشتری'] if 'به کار بردن نام مشتری' in i else 0 for i in data_list]
         y5 = [i['لحن صحبت با مشتری'] if 'لحن صحبت با مشتری' in i else 0 for i in data_list]
         y6 = [i['احترام به مشتری'] if 'احترام به مشتری' in i else 0 for i in data_list]
         y7 = [i['مدیریت خشم'] if 'مدیریت خشم' in i else 0 for i in data_list]
@@ -488,16 +489,18 @@ def plot(request):
         # q = figure(x_range=name_list)
         # q.vbar_stack(y_list, x='name_list', source=my_data,color=cols, width=0.5,
         #              legend_label=y_list)
-        number_of_operator = Agent.objects.all().count()
+        operators = Agent.objects.all()
+        number_of_operator = len([i for i in operators if i.agent.agent])
         p.y_range.start = 0
         p.x_range.range_padding = 0.1
         p.xaxis.major_label_orientation = 1
         p.xgrid.grid_line_color = None
         p.add_tools(h)
         p.plot_width = number_of_operator * 600
-        show(p)
+        script, div = components(p)
+        # show(p)
         # show(q)
-        return redirect('qc')
+        return render(request, 'QC/bokeh.html', {'script': script, 'div': div})
     return HttpResponse('<h2>There is no voice yet in this month</h2>')
 
 

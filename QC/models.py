@@ -102,6 +102,36 @@ class Indicators(models.Model):
     call_duration_management = models.BooleanField(default=False)
     negotiation = models.BooleanField(default=False)
     final_sentences = models.BooleanField(default=False)
+    # output features
+    output_starting_sentences = models.BooleanField(default=False)
+    output_say_customer_name = models.BooleanField(default=False)
+    output_speaking_tone = models.BooleanField(default=False)
+    output_respect_to_customer = models.BooleanField(default=False)
+    output_anger_management = models.BooleanField(default=False)
+    output_proper_interaction = models.BooleanField(default=False)
+    output_do_not_use_negative_verbs = models.BooleanField(default=False)
+    output_effective_listening = models.BooleanField(default=False)
+    output_interrupt_customer_talk = models.BooleanField(default=False)
+    output_correct_customer_guidance = models.BooleanField(default=False)
+    output_not_offer_discounted_goods = models.BooleanField(default=False)
+    output_not_productology = models.BooleanField(default=False)
+    output_announce_final_price_invoice = models.BooleanField(default=False)
+    output_cancel_offer = models.BooleanField(default=False)
+    output_offer_discount_code_for_organic_order = models.BooleanField(default=False)
+    output_unsuccessful_negotiation = models.BooleanField(default=False)
+    output_bad_time_management = models.BooleanField(default=False)
+    output_final_sentences = models.BooleanField(default=False)
+    # Rejection
+    ref_starting_sentences = models.BooleanField(default=False)
+    ref_say_customer_name = models.BooleanField(default=False)
+    ref_speaking_tone = models.BooleanField(default=False)
+    ref_respect_to_customer = models.BooleanField(default=False)
+    ref_effective_listening = models.BooleanField(default=False)
+    ref_interrupt_customer_talk = models.BooleanField(default=False)
+    ref_correct_customer_guidance = models.BooleanField(default=False)
+    ref_familiarity_with_okala_panel = models.BooleanField(default=False)
+    ref_correct_reference = models.BooleanField(default=False)
+    ref_final_sentences = models.BooleanField(default=False)
 
     comment = models.CharField(max_length=500, null=True, blank=True)
     voice = models.OneToOneField(Voice, on_delete=models.CASCADE,
@@ -126,7 +156,11 @@ class Indicators(models.Model):
                            self.familiarity_with_okala_panel, self.proper_hold,
                            self.observe_hold_law, self.unnecessary_referral_to_another_unit,
                            self.express_unnecessary_issues, self.call_duration_management, self.negotiation,
-                           self.final_sentences]
+                           self.final_sentences,
+                           self.output_starting_sentences, self.output_say_customer_name,
+                           self.output_speaking_tone, self.output_respect_to_customer,
+                           self.offer_discount_code_for_organic_order, self.unsuccessful_negotiation,
+                           self.bad_time_management, self.correct_reference]
         self.score = len(indicators_list) - sum(indicators_list)
         return self.score
 
@@ -147,5 +181,5 @@ class Indicators(models.Model):
                                             int(self.express_unnecessary_issues) * 1,
                                             int(self.call_duration_management) * 2,
                                             int(self.negotiation) * 3,
-                                            int(self.final_sentences) * 2])
+                                            int(self.final_sentences) * 2,int(self.not_offer_discounted_goods) * 4])
         return self.score_from_hundred

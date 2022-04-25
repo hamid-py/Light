@@ -157,10 +157,21 @@ class Indicators(models.Model):
                            self.observe_hold_law, self.unnecessary_referral_to_another_unit,
                            self.express_unnecessary_issues, self.call_duration_management, self.negotiation,
                            self.final_sentences,
+
                            self.output_starting_sentences, self.output_say_customer_name,
                            self.output_speaking_tone, self.output_respect_to_customer,
-                           self.offer_discount_code_for_organic_order, self.unsuccessful_negotiation,
-                           self.bad_time_management, self.correct_reference]
+                           self.output_anger_management, self.output_proper_interaction,
+                           self.output_do_not_use_negative_verbs, self.output_effective_listening,
+                           self.output_interrupt_customer_talk, self.output_correct_customer_guidance,
+                           self.output_not_offer_discounted_goods, self.output_not_productology,
+                           self.output_announce_final_price_invoice, self.output_cancel_offer,
+                           self.output_offer_discount_code_for_organic_order, self.output_unsuccessful_negotiation,
+                           self.output_bad_time_management, self.output_final_sentences,
+
+                           self.ref_starting_sentences, self.ref_say_customer_name, self.ref_speaking_tone,
+                           self.ref_respect_to_customer, self.ref_effective_listening, self.ref_interrupt_customer_talk,
+                           self.ref_correct_customer_guidance, self.ref_familiarity_with_okala_panel,
+                           self.ref_correct_reference, self.ref_final_sentences]
         self.score = len(indicators_list) - sum(indicators_list)
         return self.score
 
@@ -181,5 +192,31 @@ class Indicators(models.Model):
                                             int(self.express_unnecessary_issues) * 1,
                                             int(self.call_duration_management) * 2,
                                             int(self.negotiation) * 3,
-                                            int(self.final_sentences) * 2,int(self.not_offer_discounted_goods) * 4])
+                                            int(self.final_sentences) * 2,
+
+                                            int(self.output_starting_sentences) * 1,
+                                            int(self.output_say_customer_name) * 2, int(self.output_speaking_tone) * 4,
+                                            int(self.output_respect_to_customer) * 4,
+                                            int(self.output_anger_management) * 3,
+                                            int(self.output_proper_interaction) * 4,
+                                            int(self.output_do_not_use_negative_verbs) * 2,
+                                            int(self.output_effective_listening) * 3,
+                                            int(self.output_interrupt_customer_talk) * 1,
+                                            int(self.output_correct_customer_guidance) * 3,
+                                            int(self.output_not_offer_discounted_goods) * 4,
+                                            int(self.output_not_productology) * 4,
+                                            int(self.output_announce_final_price_invoice) * 4,
+                                            int(self.output_cancel_offer) * 3,
+                                            int(self.output_offer_discount_code_for_organic_order) * 3,
+                                            int(self.output_unsuccessful_negotiation) * 3,
+                                            int(self.output_bad_time_management) * 1,
+                                            int(self.output_final_sentences) * 1,
+
+                                            int(self.ref_starting_sentences) * 5, int(self.ref_say_customer_name) * 5,
+                                            int(self.ref_speaking_tone) * 5, int(self.ref_respect_to_customer) * 5,
+                                            int(self.ref_effective_listening) * 5,
+                                            int(self.ref_interrupt_customer_talk) * 5,
+                                            int(self.ref_correct_customer_guidance) * 5,
+                                            int(self.ref_familiarity_with_okala_panel) * 5,
+                                            int(self.ref_correct_reference) * 5, int(self.ref_final_sentences) * 5, ])
         return self.score_from_hundred

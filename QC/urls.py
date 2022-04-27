@@ -15,6 +15,8 @@ urlpatterns = [
     path('excel/', views.excel_report, name='qc_excel'),
     path('plot/', views.plot, name='plot'),
     path('extra/', views.extra_voice, name='extra'),
-    path('complete/<int:pk>', views.complete_extra_voice, name='complete')
+    path('complete/<int:pk>', views.complete_extra_voice, name='complete'),
+    path('outscore/', views.output_qc_score, name='outscore'),
+    path('refscore/', views.ref_qc_score, name='refscore')
 
 ]

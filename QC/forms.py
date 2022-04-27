@@ -124,3 +124,27 @@ class OutputQcScoreForm(ModelForm):
             'output_final_sentences': _("بیان جملات پایانی"),
             'comment': _("توضیحات"),
         }
+
+
+class RefScoreForm(ModelForm):
+    class Meta:
+        model = Indicators
+        fields = ['voice', 'ref_starting_sentences', 'ref_say_customer_name', 'ref_speaking_tone',
+                  'ref_respect_to_customer', 'ref_effective_listening', 'ref_interrupt_customer_talk',
+                  'ref_correct_customer_guidance', 'ref_familiarity_with_okala_panel', 'ref_correct_reference',
+                  'ref_final_sentences', 'comment']
+
+        labels = {
+            'voice': _("ویس"),
+            'ref_starting_sentences': _("بیان جملات شروع"),
+            'ref_say_customer_name': _("به کار بردن نام مشتری"),
+            'ref_speaking_tone': _("لحن صحبت با مشتری"),
+            'ref_respect_to_customer': _("احترام به مشتری"),
+            'ref_effective_listening': _("گوش دادن موثر"),
+            'ref_interrupt_customer_talk': _("قطع صحبت مشتری"),
+            'ref_correct_customer_guidance': _("راهنمایی صحیح مشتری "),
+            'ref_familiarity_with_okala_panel': _("آشنایی با پنل اکالا"),
+            'ref_correct_reference': _("مرجوعی صحیح"),
+            'ref_final_sentences': _("بیان جملات پایانی"),
+            'comment': _("توضیحات"),
+        }

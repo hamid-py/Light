@@ -9,7 +9,7 @@ from bokeh.plotting import figure
 from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, redirect
 
-from .forms import QcScoreForm, VoiceForm, SetPolicyForm, QcOperatorForm
+from .forms import QcScoreForm, VoiceForm, SetPolicyForm, QcOperatorForm, OutputQcScoreForm, RefScoreForm
 from .models import Indicators, Voice, Agent, SetPolicy, QcOperator
 from khayyam import *
 from django.utils.translation import ugettext_lazy as _
@@ -95,11 +95,62 @@ def qc_score(request):
     return render(request, 'QC/score.html', {'form': form})
 
 
+def output_qc_score(request):
+    policy = SetPolicy.objects.all().last()
+    form = OutputQcScoreForm(request.POST, request.FILES)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.instance.score = form.instance.get_score
+            form.save()
+            voice = Indicators.objects.all().last()
+            if voice:
+                if voice.get_score_from_hundred < policy.pass_score:
+                    agent = voice.voice.agent_name.agent_warning
+                    agent.add_remark
+                    agent.add_warning
+                    agent.save()
+            return redirect('/qc/voice')
+    form = OutputQcScoreForm()
+    form.fields["voice"].queryset = Voice.objects.filter(created_date__gte=datetime.now() - timedelta(minutes=1))
+
+    # voice = Indicators.objects.all().last()
+    # if voice:
+    #     context = voice.get_score
+    # else:
+    #     context = 'no data'
+    return render(request, 'QC/output_score.html', {'form': form})
+
+
+def ref_qc_score(request):
+    policy = SetPolicy.objects.all().last()
+    form = RefScoreForm(request.POST, request.FILES)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.instance.score = form.instance.get_score
+            form.save()
+            voice = Indicators.objects.all().last()
+            if voice:
+                if voice.get_score_from_hundred < policy.pass_score:
+                    agent = voice.voice.agent_name.agent_warning
+                    agent.add_remark
+                    agent.add_warning
+                    agent.save()
+            return redirect('/qc/voice')
+    form = RefScoreForm()
+    form.fields["voice"].queryset = Voice.objects.filter(created_date__gte=datetime.now() - timedelta(minutes=1))
+
+    # voice = Indicators.objects.all().last()
+    # if voice:
+    #     context = voice.get_score
+    # else:
+    #     context = 'no data'
+    return render(request, 'QC/output_score.html', {'form': form})
+
 def complete_extra_voice(request, pk):
     voice = Voice.objects.get(id=pk)
     form = QcScoreForm()
     form.fields["voice"].queryset = Voice.objects.filter(id=pk)
-    return render(request, 'QC/score.html', {'form': form})
+    return render(request, 'QC/refscore.html', {'form': form})
 
 
 def score_history(request):
@@ -400,7 +451,7 @@ def plot(request):
             df = pd.concat([df, df_new])
         data = df.groupby('name')['score', 'voice'].mean()
         data_source = ColumnDataSource(data)
-        y = [sum(i['score'])/len(i['score']) for i in data_list]
+        y = [sum(i['score']) / len(i['score']) for i in data_list]
         y2 = [i['voice'] for i in data_list]
         y3 = [i['بیان جملات شروع'] if 'بیان جملات شروع' in i else 0 for i in data_list]
         y4 = [i['به کار بردن نام مشتری'] if 'به کار بردن نام مشتری' in i else 0 for i in data_list]
@@ -454,7 +505,8 @@ def plot(request):
                   'احترام به مشتری',
                   'مدیریت خشم', 'تعامل مناسب با مشتری', 'عدم استفاده از افعال منفی', 'گوش دادن موثر', 'قطع صحبت مشتری',
                   'راهنمایی صحیح مشتری',
-                  'ثبت صحیح شکایت', 'آشنایی با اپلیکیشن و سایت', 'آشنایی با پنل اکالا', 'hold مناسب', 'hold رعایت قانون',
+                  'ثبت صحیح شکایت', 'آشنایی با اپلیکیشن و سایت', 'آشنایی با پنل اکالا', 'hold مناسب',
+                  'hold رعایت قانون',
                   'ارجاع بی مورد بی واحد دیگر',
                   'بیان مسائل غیر ضروری', 'مدیریت زمان مکالمه/سکوت بی مورد', 'مذاکره', 'بیان جملات پایانی']
         palette = [cc.rainbow[i * 15] for i in range(17)]

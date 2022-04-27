@@ -37,6 +37,35 @@ labels = {
     'call_duration_management': _("مدیریت زمان مکالمه/سکوت بی مورد"),
     'negotiation': _("مذاکره"),
     'final_sentences': _("بیان جملات پایانی"),
+    'ref_starting_sentences': _("بیان جملات شروع"),
+    'ref_say_customer_name': _("به کار بردن نام مشتری"),
+    'ref_speaking_tone': _("لحن صحبت با مشتری"),
+    'ref_respect_to_customer': _("احترام به مشتری"),
+    'ref_effective_listening': _("گوش دادن موثر"),
+    'ref_interrupt_customer_talk': _("قطع صحبت مشتری"),
+    'ref_correct_customer_guidance': _("راهنمایی صحیح مشتری "),
+    'ref_familiarity_with_okala_panel': _("آشنایی با پنل اکالا"),
+    'ref_correct_reference': _("مرجوعی صحیح"),
+    'ref_final_sentences': _("بیان جملات پایانی"),
+    'comment': _("توضیحات"),
+    'output_starting_sentences': _("بیان جملات شروع"),
+    'output_say_customer_name': _("به کار بردن نام مشتری"),
+    'output_speaking_tone': _("لحن صحبت با مشتری"),
+    'output_respect_to_customer': _("احترام به مشتری"),
+    'output_anger_management': _("مدیریت خشم"),
+    'output_proper_interaction': _("تعامل مناسب با مشتری"),
+    'output_do_not_use_negative_verbs': _("عدم استفاده از افعال منفی"),
+    'output_effective_listening': _("گوش دادن موثر"),
+    'output_interrupt_customer_talk': _("قطع صحبت مشتری"),
+    'output_correct_customer_guidance': _("راهنمایی صحیح مشتری"),
+    'output_not_offer_discounted_goods': _("پیشنهاد کالا پرتخفیف "),
+    'output_not_productology': _("محصول شناسی "),
+    'output_announce_final_price_invoice': _("اعلام قیمت نهایی فاکتور"),
+    'output_cancel_offer': _("عدم پیشنهاد کنسلی "),
+    'output_offer_discount_code_for_organic_order': _("پیشنهاد کد تخفیف برای سفارش ارگانیک"),
+    'output_unsuccessful_negotiation': _("مذاکره موفق"),
+    'output_bad_time_management': _("مدیریت زمان "),
+    'output_final_sentences': _("بیان جملات پایانی"),
 }
 
 
@@ -65,15 +94,11 @@ def voice(request):
             form.instance.qc_operator = qc_agent
             form.save()
             if form.data['department'] == 'ورودی':
-                print(form.data['department'], 'form+++++++++++++++++++')
                 return redirect('/qc/score')
             elif form.data['department'] == 'خروجی':
-                print(form.data['department'], 'form+++++++++++++++++++')
                 return redirect('/qc/outscore')
             elif form.data['department'] == 'مرجوعی':
-                print(form.data['department'], 'form+++++++++++++++++++')
                 return redirect('/qc/refscore')
-            print('none++++++++++++++++++++')
     form = VoiceForm()
     return render(request, 'QC/voice.html', {'form': form})
 
@@ -153,7 +178,8 @@ def ref_qc_score(request):
     #     context = voice.get_score
     # else:
     #     context = 'no data'
-    return render(request, 'QC/output_score.html', {'form': form})
+    return render(request, 'QC/refscore.html', {'form': form})
+
 
 def complete_extra_voice(request, pk):
     voice = Voice.objects.get(id=pk)
@@ -219,13 +245,15 @@ def get_detail_indicators(pk):
 def detail_score(request, pk):
     # indicators = []
     voice = Voice.objects.filter(id=pk).last()
+    group = voice.agent_name.group_user.last().group_type
     comment = voice.voice.comment
     # for key, value in voice.voice.__dict__.items():
     #     if value is True:
     #         indicators.append(labels[key])
     indicators = get_detail_indicators(pk)
 
-    return render(request, 'QC/detail_score.html', {'context': voice, 'indicators': indicators, 'comment': comment})
+    return render(request, 'QC/detail_score.html', {'context': voice, 'indicators': indicators, 'comment': comment,
+                                                    'group': group})
 
 
 def agent_history(request):
@@ -264,11 +292,6 @@ def agent_history_detail(request, pk):
                 for _ in range(1, indicators_count.count(j)):
                     indicators_count.remove(j)
 
-
-
-
-
-
     else:
         return HttpResponse('<h2>ویسی موجود نیست</h2>')
     if voices:
@@ -283,7 +306,8 @@ def agent_history_detail(request, pk):
 
     return render(request, 'QC/agent_detail.html', {'context': agent, 'indicators': indicators_count,
                                                     'number': number_of_voice,
-                                                    'each': each_voice_list, 'remark': num_of_remark})
+                                                    'each': each_voice_list, 'remark': num_of_remark,
+                                                    })
 
 
 import io

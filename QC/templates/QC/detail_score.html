@@ -4,15 +4,16 @@
 
 {% block content%}
 
-<div class="container" >
+<div class="container"  style="text-align: center;" dir="RTL">
 <div class="row" >
 <div class="col-sm-3" style="background-color: #F4F6F6  ;">
   <blockquote class="blockquote">
-      <ul class="list-group">
+      <ul class="list-group" >
 <li class="list-group-item list-group-item-info">اطلاعات اپراتور</li>
 <li class="list-group-item ">نام اپراتور: {{context.agent_name}}</li>
 <li class="list-group-item">نام سرتیم: {{context.team_leader}}</li>
 <li class="list-group-item">نام لیدر: {{context.leader}}</li>
+          <li class="list-group-item">گروه: {{group}}</li>
           </ul>
 
 <br><br>
@@ -31,10 +32,10 @@
 {%endfor%}
     <br><br>
           </div>
-          <div class="col-sm-3 " style="background-color: #F4F6F6 ;">
+          <div class="col-sm-3  " style="background-color: #F4F6F6; text-align: center;">
 <li class="list-group-item list-group-item-success">نمره</li>
 <li class="list-group-item">توضیحات: {{comment}}</li>
-<li class="list-group-item">نمره: {{context.voice.score}}</li>
+<!--<li class="list-group-item">نمره: {{context.voice.score}}</li>-->
 <li class="list-group-item">نمره از پنجاه: {{context.voice.get_score_from_hundred}}</li>
 <li class="list-group-item" >تاریخ: {{context.created_date}}</li>
     </blockquote>

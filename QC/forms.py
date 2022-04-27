@@ -124,6 +124,9 @@ class OutputQcScoreForm(ModelForm):
             'output_final_sentences': _("بیان جملات پایانی"),
             'comment': _("توضیحات"),
         }
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': 5, 'cols': 30})
+        }
 
 
 class RefScoreForm(ModelForm):
@@ -147,4 +150,7 @@ class RefScoreForm(ModelForm):
             'ref_correct_reference': _("مرجوعی صحیح"),
             'ref_final_sentences': _("بیان جملات پایانی"),
             'comment': _("توضیحات"),
+        }
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': 5, 'cols': 30})
         }

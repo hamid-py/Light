@@ -64,7 +64,16 @@ def voice(request):
         if form.is_valid():
             form.instance.qc_operator = qc_agent
             form.save()
-            return redirect('/qc/score')
+            if form.data['department'] == 'ورودی':
+                print(form.data['department'], 'form+++++++++++++++++++')
+                return redirect('/qc/score')
+            elif form.data['department'] == 'خروجی':
+                print(form.data['department'], 'form+++++++++++++++++++')
+                return redirect('/qc/outscore')
+            elif form.data['department'] == 'مرجوعی':
+                print(form.data['department'], 'form+++++++++++++++++++')
+                return redirect('/qc/refscore')
+            print('none++++++++++++++++++++')
     form = VoiceForm()
     return render(request, 'QC/voice.html', {'form': form})
 

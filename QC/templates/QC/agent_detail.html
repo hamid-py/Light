@@ -9,16 +9,16 @@
 <div class="row content" dir="rtl">
     <div class="col-sm-3 sidenav">
 <h3>{{context.agent}}</h3>
-<p>
-<li>{{number}} :تعداد ویس</li>
-<li>{{remark}} :تعداد تذکر</li>
-<li>{{context.number_of_warning}} :تعداد اخطار</li>
-<li>{{context.number_of_retraining}} :تعداد آموزش مجدد</li>
-</p>
+<ul dir="ltr" style="text-align: right;">
+<li class="list-group-item">{{number}} :تعداد ویس</li>
+<li class="list-group-item">{{remark}} :تعداد تذکر</li>
+<li class="list-group-item">{{context.number_of_warning}} :تعداد اخطار</li>
+<li class="list-group-item">{{context.number_of_retraining}} :تعداد آموزش مجدد</li>
+        </ul>
 <h3>خطاها</h3>
 {%for i in indicators%}
 {%for key, value in i.items%}
-<li>{{key}}: {{value}}</li>
+<li class="list-group-item">{{key}}: {{value}}</li>
 {%endfor%}
 {%endfor%}
 <form action="{%url 'agent_detail' context.id%}" method="POST">
@@ -33,15 +33,24 @@
 <a href="{%url 'qc'%}"  class="btn btn-primary active" role="button">Home</a>
     </div>
 <div class="col-sm-4" style="background-color:white">
+    <table class="table">
+         <thead>
+      <tr>
+
+
 {%for i in each%}
-    <ul>
-        <hr>
+          </tr>
+    <tbody>
+    <tr>
     {%for j in i%}
 
-        <li>{{j}}</li>
+        <li class="list-group-item">{{j}}</li>
 
     {%endfor%}
-    </ul>
+</tr>
+    </tbody>
+        <li class="list-group-item list-group-item-dark"></li>
+
 {%endfor%}
 
     </div>

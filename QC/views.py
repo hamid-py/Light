@@ -6,6 +6,7 @@ from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.palettes import Spectral6, Spectral4, Spectral5, Cividis256, RdYlGn11, Inferno256, Magma11, Plasma11, \
     Plasma256
 from bokeh.plotting import figure
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, redirect
 
@@ -58,13 +59,13 @@ labels = {
     'output_effective_listening': _("گوش دادن موثر"),
     'output_interrupt_customer_talk': _("قطع صحبت مشتری"),
     'output_correct_customer_guidance': _("راهنمایی صحیح مشتری"),
-    'output_not_offer_discounted_goods': _("پیشنهاد کالا پرتخفیف "),
-    'output_not_productology': _("محصول شناسی "),
+    'output_not_offer_discounted_goods': _("پیشنهاد کالا پرتخفیف"),
+    'output_not_productology': _("محصول شناسی"),
     'output_announce_final_price_invoice': _("اعلام قیمت نهایی فاکتور"),
-    'output_cancel_offer': _("عدم پیشنهاد کنسلی "),
+    'output_cancel_offer': _("عدم پیشنهاد کنسلی"),
     'output_offer_discount_code_for_organic_order': _("پیشنهاد کد تخفیف برای سفارش ارگانیک"),
     'output_unsuccessful_negotiation': _("مذاکره موفق"),
-    'output_bad_time_management': _("مدیریت زمان "),
+    'output_bad_time_management': _("مدیریت زمان"),
     'output_final_sentences': _("بیان جملات پایانی"),
 }
 
@@ -74,6 +75,7 @@ def to_jalali(date):
     return jalali_date.strftime(("%Y %m %d"))
 
 
+@login_required(login_url='login')
 def set_policy(request):
     policy = SetPolicy.objects.all().last()
     form = SetPolicyForm(instance=policy)
@@ -85,6 +87,7 @@ def set_policy(request):
     return render(request, 'QC/set_policy.html', {'form': form})
 
 
+@login_required(login_url='login')
 def voice(request):
     user = request.user
     qc_agent = user.customuser.qc_agent.last()
@@ -103,6 +106,7 @@ def voice(request):
     return render(request, 'QC/voice.html', {'form': form})
 
 
+@login_required(login_url='login')
 def qc_score(request):
     policy = SetPolicy.objects.all().last()
     form = QcScoreForm(request.POST, request.FILES)
@@ -129,6 +133,7 @@ def qc_score(request):
     return render(request, 'QC/score.html', {'form': form})
 
 
+@login_required(login_url='login')
 def output_qc_score(request):
     policy = SetPolicy.objects.all().last()
     form = OutputQcScoreForm(request.POST, request.FILES)
@@ -155,6 +160,7 @@ def output_qc_score(request):
     return render(request, 'QC/output_score.html', {'form': form})
 
 
+@login_required(login_url='login')
 def ref_qc_score(request):
     policy = SetPolicy.objects.all().last()
     form = RefScoreForm(request.POST, request.FILES)
@@ -181,6 +187,7 @@ def ref_qc_score(request):
     return render(request, 'QC/refscore.html', {'form': form})
 
 
+@login_required(login_url='login')
 def complete_extra_voice(request, pk):
     voice = Voice.objects.get(id=pk)
     form = QcScoreForm()
@@ -188,6 +195,7 @@ def complete_extra_voice(request, pk):
     return render(request, 'QC/refscore.html', {'form': form})
 
 
+@login_required(login_url='login')
 def score_history(request):
     qc_agent_list = []
     qc_agent = QcOperator.objects.all()
@@ -233,6 +241,7 @@ def delete_voice(request, pk):
     return redirect('score_history')
 
 
+@login_required(login_url='login')
 def get_detail_indicators(pk):
     indicators = []
     voice = Voice.objects.filter(id=pk).last()
@@ -242,6 +251,7 @@ def get_detail_indicators(pk):
     return indicators
 
 
+@login_required(login_url='login')
 def detail_score(request, pk):
     # indicators = []
     voice = Voice.objects.filter(id=pk).last()
@@ -256,11 +266,13 @@ def detail_score(request, pk):
                                                     'group': group})
 
 
+@login_required(login_url='login')
 def agent_history(request):
     agent = Agent.objects.all()
     return render(request, 'QC/agent.html', {'context': agent})
 
 
+@login_required(login_url='login')
 def agent_history_detail(request, pk):
     agent = Agent.objects.get(id=pk)
     voices = Voice.objects.filter(agent_name__user__username=agent)
@@ -279,7 +291,7 @@ def agent_history_detail(request, pk):
                     indicators.append(labels[key])
                     all_indicators.append(labels[key])
             each_voice_list.append([voice.voice_date, voice.voice_name, voice.qc_operator, voice.voice.comment,
-                                    voice.voice.get_score, voice.voice.get_score_from_hundred])
+                                     voice.voice.get_score_from_hundred])
             each_voice_list.append(indicators)
         for i in all_indicators:
             indicators_count.append({i: all_indicators.count(i)})
@@ -314,6 +326,7 @@ import io
 import xlsxwriter
 
 
+@login_required(login_url='login')
 def excel_report(request):
     midnight = datetime.combine(datetime.today(), time.min)
     today = datetime.today()
@@ -351,9 +364,42 @@ def excel_report(request):
     worksheet.write('Z1', 'مدیریت مدت زمان مکالمه/سکوت بی مورد')
     worksheet.write('AA1', 'مذاکره')
     worksheet.write('AB1', 'بیان جملات پایانی')
-    worksheet.write('AC1', 'نمره مکالمه')
-    worksheet.write('AD1', 'نمره از 50')
-    worksheet.write('AE1', 'تایید/عدم تایید')
+    worksheet.write('AC1', '')
+    #output
+    worksheet.write('AD1', 'بیان جملات شروع')
+    worksheet.write('AE1', 'به کار بردن نام مشتری')
+    worksheet.write('AF1', 'لحن صحبت با مشتری')
+    worksheet.write('AG1', 'احترام به مشتری')
+    worksheet.write('AH1', 'مدیریت خشم')
+    worksheet.write('AI1', 'تعامل مناسب با مشتری')
+    worksheet.write('AJ1', 'عدم استفاده از افعال منفی')
+    worksheet.write('AK1', 'گوش دادن موثر')
+    worksheet.write('AL1', 'قطع صحبت مشتری')
+    worksheet.write('AM1', 'راهنمایی صحیح مشتری')
+    worksheet.write('AN1', 'پیشنهاد کالا پرتخفیف')
+    worksheet.write('AO1', 'محصول شناسی')
+    worksheet.write('AP1', 'اعلام قیمت نهایی فاکتور')
+    worksheet.write('AQ1', 'عدم پیشنهاد کنسلی')
+    worksheet.write('AR1', 'پیشنهاد کد تخفیف برای سفارش ارگانیک')
+    worksheet.write('AS1', 'مذاکره موفق')
+    worksheet.write('AT1', 'مدیریت زمان')
+    worksheet.write('AU1', 'بیان جملات پایانی')
+    worksheet.write('AV1', '')
+    #ref
+    worksheet.write('AW1', 'بیان جملات شروع')
+    worksheet.write('AX1', 'به کاربرد نام مشتری')
+    worksheet.write('AY1', 'لحن صحبت با مشتری')
+    worksheet.write('AZ1', 'احترام به مشتری')
+    worksheet.write('BA1', 'گوش دادن موثر')
+    worksheet.write('BB1', 'قطع صحبت مشتری')
+    worksheet.write('BC1', 'راهنمایی صحیح مشتری')
+    worksheet.write('BD1', 'آشنایی با پنل اکالا')
+    worksheet.write('BE1', 'مرجوعی صحیح')
+    worksheet.write('BF1', 'بیان جملات پایانی')
+    worksheet.write('BG1', '')
+    #RESULT
+    worksheet.write('BH1', 'نمره از 50')
+    worksheet.write('BI1', 'تایید/عدم تایید')
     try:
         voices = Voice.objects.filter(created_date__gte=datetime.today() - timedelta(hours=delta_hours))
         for index, voice in enumerate(voices):
@@ -384,8 +430,40 @@ def excel_report(request):
             call_duration_management = voice.voice.call_duration_management
             negotiation = voice.voice.negotiation
             final_sentences = voice.voice.final_sentences
+            #result
             score = voice.voice.score
             score_from_hundred = voice.voice.get_score_from_hundred
+            #output
+            output_starting_sentences = voice.voice.output_starting_sentences
+            output_say_customer_name = voice.voice.output_say_customer_name
+            output_speaking_tone = voice.voice.output_speaking_tone
+            output_respect_to_customer = voice.voice.output_respect_to_customer
+            output_anger_management = voice.voice.output_anger_management
+            output_proper_interaction = voice.voice.output_proper_interaction
+            output_do_not_use_negative_verbs = voice.voice.output_do_not_use_negative_verbs
+            output_effective_listening = voice.voice.output_effective_listening
+            output_interrupt_customer_talk = voice.voice.output_interrupt_customer_talk
+            output_correct_customer_guidance = voice.voice.output_correct_customer_guidance
+            output_not_offer_discounted_goods = voice.voice.output_not_offer_discounted_goods
+            output_not_productology = voice.voice.output_not_productology
+            output_announce_final_price_invoice = voice.voice.output_announce_final_price_invoice
+            output_cancel_offer = voice.voice.output_cancel_offer
+            output_offer_discount_code_for_organic_order = voice.voice.output_offer_discount_code_for_organic_order
+            output_unsuccessful_negotiation = voice.voice.output_unsuccessful_negotiation
+            output_bad_time_management = voice.voice.output_bad_time_management
+            output_final_sentences = voice.voice.output_final_sentences
+            # Rejection
+            ref_starting_sentences  = voice.voice.ref_starting_sentences
+            ref_say_customer_name = voice.voice.ref_say_customer_name
+            ref_speaking_tone = voice.voice.ref_speaking_tone
+            ref_respect_to_customer = voice.voice.ref_respect_to_customer
+            ref_effective_listening = voice.voice.ref_effective_listening
+            ref_interrupt_customer_talk = voice.voice.ref_interrupt_customer_talk
+            ref_correct_customer_guidance = voice.voice.ref_correct_customer_guidance
+            ref_familiarity_with_okala_panel = voice.voice.ref_familiarity_with_okala_panel
+            ref_correct_reference = voice.voice.ref_correct_reference
+            ref_final_sentences = voice.voice.ref_final_sentences
+
 
             worksheet.write(f'A{index + 2}', index + 1)
             worksheet.write(f'B{index + 2}', operator_name)
@@ -415,15 +493,46 @@ def excel_report(request):
             worksheet.write(f'Z{index + 2}', not (call_duration_management))
             worksheet.write(f'AA{index + 2}', not (negotiation))
             worksheet.write(f'AB{index + 2}', not (final_sentences))
-            worksheet.write(f'AC{index + 2}', score)
-            worksheet.write(f'AD{index + 2}', score_from_hundred)
-            worksheet.write(f'AE{index + 2}', '')
+            worksheet.write(f'AC{index + 2}', )
+            #RESULT
+            worksheet.write(f'BH{index + 2}', score_from_hundred)
+            worksheet.write(f'BI{index + 2}', '')
+            #OUTPUT
+            worksheet.write(f'AD{index + 2}', not (output_starting_sentences))
+            worksheet.write(f'AE{index + 2}', not (output_say_customer_name ))
+            worksheet.write(f'AF{index + 2}', not (output_speaking_tone ))
+            worksheet.write(f'AG{index + 2}', not (output_respect_to_customer ))
+            worksheet.write(f'AH{index + 2}', not (output_anger_management ))
+            worksheet.write(f'AI{index + 2}', not (output_proper_interaction ))
+            worksheet.write(f'AJ{index + 2}', not (output_do_not_use_negative_verbs ))
+            worksheet.write(f'AK{index + 2}', not (output_effective_listening ))
+            worksheet.write(f'AL{index + 2}', not (output_interrupt_customer_talk ))
+            worksheet.write(f'AM{index + 2}', not (output_correct_customer_guidance ))
+            worksheet.write(f'AN{index + 2}', not (output_not_offer_discounted_goods ))
+            worksheet.write(f'AO{index + 2}', not (output_not_productology ))
+            worksheet.write(f'AP{index + 2}', not (output_announce_final_price_invoice ))
+            worksheet.write(f'AQ{index + 2}', not (output_cancel_offer ))
+            worksheet.write(f'AR{index + 2}', not (output_offer_discount_code_for_organic_order ))
+            worksheet.write(f'AS{index + 2}', not (output_unsuccessful_negotiation ))
+            worksheet.write(f'AT{index + 2}', not (output_bad_time_management ))
+            worksheet.write(f'AU{index + 2}', not (output_final_sentences ))
+            #REF
+            worksheet.write(f'AW{index + 2}', not (ref_starting_sentences ))
+            worksheet.write(f'AX{index + 2}', not (ref_say_customer_name ))
+            worksheet.write(f'AY{index + 2}', not (ref_speaking_tone ))
+            worksheet.write(f'AZ{index + 2}', not (ref_respect_to_customer ))
+            worksheet.write(f'BA{index + 2}', not (ref_effective_listening ))
+            worksheet.write(f'BB{index + 2}', not (ref_interrupt_customer_talk ))
+            worksheet.write(f'BC{index + 2}', not (ref_correct_customer_guidance ))
+            worksheet.write(f'BD{index + 2}', not (ref_familiarity_with_okala_panel ))
+            worksheet.write(f'BE{index + 2}', not (ref_correct_reference ))
+            worksheet.write(f'BF{index + 2}', not (ref_final_sentences ))
     except:
         return redirect('extra')
     workbook.close()
     buffer.seek(0)
 
-    return FileResponse(buffer, as_attachment=True, filename='report.xlsx')
+    return FileResponse(buffer, as_attachment=True, filename=f'report-{datetime.today()}.xlsx')
 
 
 def qc(request):
@@ -439,6 +548,7 @@ from bokeh.models import ColumnDataSource, FactorRange
 import colorcet as cc
 
 
+@login_required(login_url='login')
 def plot(request):
     df = pd.DataFrame(columns=['name', 'score', 'voice'])
     data_list = []
@@ -507,6 +617,17 @@ def plot(request):
                data_list]
         y21 = [i['مذاکره'] if 'مذاکره' in i else 0 for i in data_list]
         y22 = [i['بیان جملات پایانی'] if 'بیان جملات پایانی' in i else 0 for i in data_list]
+        #ref
+        y23 = [i['مرجوعی صحیح'] if 'مرجوعی صحیح' in i else 0 for i in data_list]
+        #output
+        y24 = [i['پیشنهاد کالا پرتخفیف'] if 'پیشنهاد کالا پرتخفیف' in i else 0 for i in data_list]
+        y25 = [i['محصول شناسی'] if 'محصول شناسی' in i else 0 for i in data_list]
+        y26 = [i['اعلام قیمت نهایی فاکتور'] if 'اعلام قیمت نهایی فاکتور' in i else 0 for i in data_list]
+        y27 = [i['عدم پیشنهاد کنسلی'] if 'عدم پیشنهاد کنسلی' in i else 0 for i in data_list]
+        y28 = [i['پیشنهاد کد تخفیف برای سفارش ارگانیک'] if
+               'پیشنهاد کد تخفیف برای سفارش ارگانیک' in i else 0 for i in data_list]
+        y29 = [i['مذاکره موفق'] if 'مذاکره موفق' in i else 0 for i in data_list]
+        y30 = [i['مدیریت زمان'] if 'مدیریت زمان' in i else 0 for i in data_list]
         # name_list = data_source.data['name'].tolist()
         name_list = [i['name'] for i in data_list]
         my_data = {'name_list': name_list,
@@ -532,6 +653,17 @@ def plot(request):
                    'مدیریت زمان مکالمه/سکوت بی مورد': y20,
                    'مذاکره': y21,
                    'بیان جملات پایانی': y22,
+                   'مرجوعی صحیح': y23,
+                   'پیشنهاد کالا پرتخفیف': y24,
+                   'محصول شناسی': y25,
+                   'اعلام قیمت نهایی فاکتور': y26,
+                   'عدم پیشنهاد کنسلی': y27,
+                   'پیشنهاد کد تخفیف برای سفارش ارگانیک': y28,
+                   'مذاکره موفق': y29,
+                   'مدیریت زمان': y30,
+
+
+
                    }
         cols = ['green', 'yellow']
         y_list = ['score', 'number of voice', 'بیان جملات شروع', 'به کار بردن نام مشتری', 'لحن صحبت با مشتری',
@@ -541,7 +673,10 @@ def plot(request):
                   'ثبت صحیح شکایت', 'آشنایی با اپلیکیشن و سایت', 'آشنایی با پنل اکالا', 'hold مناسب',
                   'hold رعایت قانون',
                   'ارجاع بی مورد بی واحد دیگر',
-                  'بیان مسائل غیر ضروری', 'مدیریت زمان مکالمه/سکوت بی مورد', 'مذاکره', 'بیان جملات پایانی']
+                  'بیان مسائل غیر ضروری', 'مدیریت زمان مکالمه/سکوت بی مورد', 'مذاکره', 'بیان جملات پایانی',
+                  'مرجوعی صحیح',
+                  'پیشنهاد کالا پرتخفیف', 'محصول شناسی', 'اعلام قیمت نهایی فاکتور', 'عدم پیشنهاد کنسلی',
+                  'پیشنهاد کد تخفیف برای سفارش ارگانیک', 'مذاکره موفق', 'مدیریت زمان']
         palette = [cc.rainbow[i * 15] for i in range(17)]
         x = [(name, data) for name in name_list for data in y_list]
         counts = sum(zip(my_data['score'], my_data['number of voice'], my_data['بیان جملات شروع'],
@@ -557,7 +692,10 @@ def plot(request):
                          my_data['ارجاع بی مورد بی واحد دیگر'],
                          my_data['بیان مسائل غیر ضروری'], my_data['مدیریت زمان مکالمه/سکوت بی مورد'],
                          my_data['مذاکره'],
-                         my_data['بیان جملات پایانی']), ())
+                         my_data['بیان جملات پایانی'], my_data['مرجوعی صحیح'], my_data['پیشنهاد کالا پرتخفیف'],
+                         my_data['محصول شناسی'], my_data['اعلام قیمت نهایی فاکتور'], my_data['عدم پیشنهاد کنسلی'],
+                         my_data['پیشنهاد کد تخفیف برای سفارش ارگانیک'], my_data['مذاکره موفق'],
+                         my_data['مدیریت زمان']), ())
         source = ColumnDataSource(data=dict(x=x, counts=counts))
         h = HoverTool()
         h.tooltips = [
@@ -589,6 +727,7 @@ def plot(request):
     return HttpResponse('<h2>There is no voice yet in this month</h2>')
 
 
+@login_required(login_url='login')
 def extra_voice(request):
     extra_voice = []
     voices = Voice.objects.all()

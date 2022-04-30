@@ -71,16 +71,16 @@ class QcScoreForm(ModelForm):
 class VoiceForm(ModelForm):
     class Meta:
         model = Voice
-        fields = ['agent_name', 'team_leader', 'leader', 'voice_name', 'voice_date']
+        fields = ['agent_name', 'team_leader', 'leader', 'voice_name', 'voice_call']
         widgets = {
-            'voice_date': DateInput(),
+            'voice_call': DateInput(),
         }
         labels = {
             'agent_name': _("نام اپراتور"),
             'team_leader': _('سرگروه'),
             'leader': _('لیدر'),
             'voice_name': _("شماره مشتری"),
-            'voice_date': _("تاریخ تماس")
+            'voice_call': _("تاریخ تماس")
 
         }
 

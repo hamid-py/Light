@@ -67,7 +67,8 @@ class Voice(models.Model):
     qc_operator = models.ForeignKey(QcOperator, on_delete=models.SET_DEFAULT, default=1, related_name='qc')
     team_leader = models.ForeignKey(TeamLeader, on_delete=models.CASCADE, related_name='sarteam')
     leader = models.ForeignKey(Leader, on_delete=models.ForeignKey, related_name='teamlead')
-    voice_date = jmodels.jDateField(default=datetime.datetime.today())
+    voice_date = models.DateTimeField(default=datetime.datetime.today())
+    voice_call = models.DateTimeField(default=datetime.datetime.today())
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 

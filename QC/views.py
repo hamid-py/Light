@@ -241,7 +241,7 @@ def delete_voice(request, pk):
     return redirect('score_history')
 
 
-@login_required(login_url='login')
+
 def get_detail_indicators(pk):
     indicators = []
     voice = Voice.objects.filter(id=pk).last()
@@ -703,7 +703,8 @@ def plot(request):
         ]
         my_colour = ("#5e4fa2", "#3288bd", "#66c2a5", "#abdda4", "#e6f598", "#ffffbf", "#fee08b", "#fdae61", "#f46d43",
                      "#d53e4f", "#9e0142", '#000003', '#160B39', '#410967', '#6A176E', '#932567', '#BA3655', '#DC5039',
-                     '#F2751A', '#FBA40A', '#F6D542', '#FCFEA4')
+                     '#F2751A', '#FBA40A', '#F6D542', '#FCFEA4', '#F5FFFA', '#FFE4E1', '#FFE4B5', '#808000', '#EEE8AA',
+                     '#C71585', '#FF4500', '#DDA0DD','#48D1CC', '#AFEEEE')
 
         p = figure(x_range=FactorRange(*x))
         p.vbar(x='x', top='counts', width=0.9, source=source,

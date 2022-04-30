@@ -550,182 +550,190 @@ import colorcet as cc
 
 @login_required(login_url='login')
 def plot(request):
-    df = pd.DataFrame(columns=['name', 'score', 'voice'])
-    data_list = []
-    agent = Agent.objects.all()
-    for i in agent:
-        operator_data = {}
-        score_list = []
-        operator_data['name'] = i.agent.user.username
-        try:
-            first_of_month = datetime.today().replace(day=1)
-            voices = Voice.objects.filter(agent_name__user__username=i.agent.user.username). \
-                filter(created_date__range=[first_of_month, datetime.today()])
+    if request.method == 'POST':
+        form = request.POST
+        if form['start'] and form['end']:
+            start = form['start']
+            end = form['end']
+        else:
+            return redirect('plot')
+        df = pd.DataFrame(columns=['name', 'score', 'voice'])
+        data_list = []
+        agent = Agent.objects.all()
+        for i in agent:
+            operator_data = {}
+            score_list = []
+            operator_data['name'] = i.agent.user.username
+            try:
+                first_of_month = datetime.today().replace(day=1)
+                voices = Voice.objects.filter(agent_name__user__username=i.agent.user.username). \
+                    filter(created_date__range=[start, end])
 
 
-        except:
-            return redirect('extra')
-        if voices:
-            each_voice_list = []
-            indicators = []
-            indicators_count = []
-            for voice in voices:
-                for key, value in voice.voice.__dict__.items():
-                    if value is True:
-                        indicators.append(labels[key])
-                each_voice_list.append([voice.voice_date, voice.voice_name, voice.qc_operator, voice.voice.comment])
-                each_voice_list.append(indicators)
+            except:
+                return redirect('extra')
+            if voices:
+                each_voice_list = []
+                indicators = []
+                indicators_count = []
+                for voice in voices:
+                    for key, value in voice.voice.__dict__.items():
+                        if value is True:
+                            indicators.append(labels[key])
+                    each_voice_list.append([voice.voice_date, voice.voice_name, voice.qc_operator, voice.voice.comment])
+                    each_voice_list.append(indicators)
 
-            for d in indicators:
-                indicators_count.append({d: indicators.count(d)})
-            for indic_dict in indicators_count:
-                for key, value in indic_dict.items():
-                    operator_data[key] = value
+                for d in indicators:
+                    indicators_count.append({d: indicators.count(d)})
+                for indic_dict in indicators_count:
+                    for key, value in indic_dict.items():
+                        operator_data[key] = value
 
-        operator_data['voice'] = len(voices)
-        if voices:
-            for j in voices:
-                score_list.append(j.voice.score)
-            operator_data['score'] = score_list
-            data_list.append(operator_data)
-    if data_list:
-        for i in data_list:
-            df_new = pd.DataFrame(i)
-            df = pd.concat([df, df_new])
-        data = df.groupby('name')['score', 'voice'].mean()
-        data_source = ColumnDataSource(data)
-        y = [sum(i['score']) / len(i['score']) for i in data_list]
-        y2 = [i['voice'] for i in data_list]
-        y3 = [i['بیان جملات شروع'] if 'بیان جملات شروع' in i else 0 for i in data_list]
-        y4 = [i['به کار بردن نام مشتری'] if 'به کار بردن نام مشتری' in i else 0 for i in data_list]
-        y5 = [i['لحن صحبت با مشتری'] if 'لحن صحبت با مشتری' in i else 0 for i in data_list]
-        y6 = [i['احترام به مشتری'] if 'احترام به مشتری' in i else 0 for i in data_list]
-        y7 = [i['مدیریت خشم'] if 'مدیریت خشم' in i else 0 for i in data_list]
-        y8 = [i['تعامل مناسب با مشتری'] if 'تعامل مناسب با مشتری' in i else 0 for i in data_list]
-        y9 = [i['عدم استفاده از افعال منفی'] if 'عدم استفاده از افعال منفی' in i else 0 for i in data_list]
-        y10 = [i['گوش دادن موثر'] if 'گوش دادن موثر' in i else 0 for i in data_list]
-        y11 = [i['قطع صحبت مشتری'] if 'قطع صحبت مشتری' in i else 0 for i in data_list]
-        y12 = [i['راهنمایی صحیح مشتری'] if 'راهنمایی صحیح مشتری' in i else 0 for i in data_list]
-        y13 = [i['ثبت صحیح شکایت'] if 'ثبت صحیح شکایت' in i else 0 for i in data_list]
-        y14 = [i['آشنایی با اپلیکیشن و سایت'] if 'آشنایی با اپلیکیشن و سایت' in i else 0 for i in data_list]
-        y15 = [i['آشنایی با پنل اکالا'] if 'آشنایی با پنل اکالا' in i else 0 for i in data_list]
-        y16 = [i['hold مناسب'] if 'hold مناسب' in i else 0 for i in data_list]
-        y17 = [i['hold رعایت قانون'] if 'hold رعایت قانون' in i else 0 for i in data_list]
-        y18 = [i['ارجاع بی مورد به واحد دیگر'] if 'ارجاع بی مورد به واحد دیگر' in i else 0 for i in data_list]
-        y19 = [i['بیان مسائل غیر ضروری'] if 'بیان مسائل غیر ضروری' in i else 0 for i in data_list]
-        y20 = [i['مدیریت زمان مکالمه/سکوت بی مورد'] if 'مدیریت زمان مکالمه/سکوت بی مورد' in i else 0 for i in
-               data_list]
-        y21 = [i['مذاکره'] if 'مذاکره' in i else 0 for i in data_list]
-        y22 = [i['بیان جملات پایانی'] if 'بیان جملات پایانی' in i else 0 for i in data_list]
-        #ref
-        y23 = [i['مرجوعی صحیح'] if 'مرجوعی صحیح' in i else 0 for i in data_list]
-        #output
-        y24 = [i['پیشنهاد کالا پرتخفیف'] if 'پیشنهاد کالا پرتخفیف' in i else 0 for i in data_list]
-        y25 = [i['محصول شناسی'] if 'محصول شناسی' in i else 0 for i in data_list]
-        y26 = [i['اعلام قیمت نهایی فاکتور'] if 'اعلام قیمت نهایی فاکتور' in i else 0 for i in data_list]
-        y27 = [i['عدم پیشنهاد کنسلی'] if 'عدم پیشنهاد کنسلی' in i else 0 for i in data_list]
-        y28 = [i['پیشنهاد کد تخفیف برای سفارش ارگانیک'] if
-               'پیشنهاد کد تخفیف برای سفارش ارگانیک' in i else 0 for i in data_list]
-        y29 = [i['مذاکره موفق'] if 'مذاکره موفق' in i else 0 for i in data_list]
-        y30 = [i['مدیریت زمان'] if 'مدیریت زمان' in i else 0 for i in data_list]
-        # name_list = data_source.data['name'].tolist()
-        name_list = [i['name'] for i in data_list]
-        my_data = {'name_list': name_list,
-                   'score': y,
-                   'number of voice': y2,
-                   'بیان جملات شروع': y3,
-                   'به کار بردن نام مشتری': y4,
-                   'لحن صحبت با مشتری': y5,
-                   'احترام به مشتری': y6,
-                   'مدیریت خشم': y7,
-                   'تعامل مناسب با مشتری': y8,
-                   'عدم استفاده از افعال منفی': y9,
-                   'گوش دادن موثر': y10,
-                   'قطع صحبت مشتری': y11,
-                   'راهنمایی صحیح مشتری': y12,
-                   'ثبت صحیح شکایت': y13,
-                   'آشنایی با اپلیکیشن و سایت': y14,
-                   'آشنایی با پنل اکالا': y15,
-                   'hold مناسب': y16,
-                   'hold رعایت قانون': y17,
-                   'ارجاع بی مورد بی واحد دیگر': y18,
-                   'بیان مسائل غیر ضروری': y19,
-                   'مدیریت زمان مکالمه/سکوت بی مورد': y20,
-                   'مذاکره': y21,
-                   'بیان جملات پایانی': y22,
-                   'مرجوعی صحیح': y23,
-                   'پیشنهاد کالا پرتخفیف': y24,
-                   'محصول شناسی': y25,
-                   'اعلام قیمت نهایی فاکتور': y26,
-                   'عدم پیشنهاد کنسلی': y27,
-                   'پیشنهاد کد تخفیف برای سفارش ارگانیک': y28,
-                   'مذاکره موفق': y29,
-                   'مدیریت زمان': y30,
+            operator_data['voice'] = len(voices)
+            if voices:
+                for j in voices:
+                    score_list.append(j.voice.score)
+                operator_data['score'] = score_list
+                data_list.append(operator_data)
+        if data_list:
+            for i in data_list:
+                df_new = pd.DataFrame(i)
+                df = pd.concat([df, df_new])
+            data = df.groupby('name')['score', 'voice'].mean()
+            data_source = ColumnDataSource(data)
+            y = [sum(i['score']) / len(i['score']) for i in data_list]
+            y2 = [i['voice'] for i in data_list]
+            y3 = [i['بیان جملات شروع'] if 'بیان جملات شروع' in i else 0 for i in data_list]
+            y4 = [i['به کار بردن نام مشتری'] if 'به کار بردن نام مشتری' in i else 0 for i in data_list]
+            y5 = [i['لحن صحبت با مشتری'] if 'لحن صحبت با مشتری' in i else 0 for i in data_list]
+            y6 = [i['احترام به مشتری'] if 'احترام به مشتری' in i else 0 for i in data_list]
+            y7 = [i['مدیریت خشم'] if 'مدیریت خشم' in i else 0 for i in data_list]
+            y8 = [i['تعامل مناسب با مشتری'] if 'تعامل مناسب با مشتری' in i else 0 for i in data_list]
+            y9 = [i['عدم استفاده از افعال منفی'] if 'عدم استفاده از افعال منفی' in i else 0 for i in data_list]
+            y10 = [i['گوش دادن موثر'] if 'گوش دادن موثر' in i else 0 for i in data_list]
+            y11 = [i['قطع صحبت مشتری'] if 'قطع صحبت مشتری' in i else 0 for i in data_list]
+            y12 = [i['راهنمایی صحیح مشتری'] if 'راهنمایی صحیح مشتری' in i else 0 for i in data_list]
+            y13 = [i['ثبت صحیح شکایت'] if 'ثبت صحیح شکایت' in i else 0 for i in data_list]
+            y14 = [i['آشنایی با اپلیکیشن و سایت'] if 'آشنایی با اپلیکیشن و سایت' in i else 0 for i in data_list]
+            y15 = [i['آشنایی با پنل اکالا'] if 'آشنایی با پنل اکالا' in i else 0 for i in data_list]
+            y16 = [i['hold مناسب'] if 'hold مناسب' in i else 0 for i in data_list]
+            y17 = [i['hold رعایت قانون'] if 'hold رعایت قانون' in i else 0 for i in data_list]
+            y18 = [i['ارجاع بی مورد به واحد دیگر'] if 'ارجاع بی مورد به واحد دیگر' in i else 0 for i in data_list]
+            y19 = [i['بیان مسائل غیر ضروری'] if 'بیان مسائل غیر ضروری' in i else 0 for i in data_list]
+            y20 = [i['مدیریت زمان مکالمه/سکوت بی مورد'] if 'مدیریت زمان مکالمه/سکوت بی مورد' in i else 0 for i in
+                   data_list]
+            y21 = [i['مذاکره'] if 'مذاکره' in i else 0 for i in data_list]
+            y22 = [i['بیان جملات پایانی'] if 'بیان جملات پایانی' in i else 0 for i in data_list]
+            #ref
+            y23 = [i['مرجوعی صحیح'] if 'مرجوعی صحیح' in i else 0 for i in data_list]
+            #output
+            y24 = [i['پیشنهاد کالا پرتخفیف'] if 'پیشنهاد کالا پرتخفیف' in i else 0 for i in data_list]
+            y25 = [i['محصول شناسی'] if 'محصول شناسی' in i else 0 for i in data_list]
+            y26 = [i['اعلام قیمت نهایی فاکتور'] if 'اعلام قیمت نهایی فاکتور' in i else 0 for i in data_list]
+            y27 = [i['عدم پیشنهاد کنسلی'] if 'عدم پیشنهاد کنسلی' in i else 0 for i in data_list]
+            y28 = [i['پیشنهاد کد تخفیف برای سفارش ارگانیک'] if
+                   'پیشنهاد کد تخفیف برای سفارش ارگانیک' in i else 0 for i in data_list]
+            y29 = [i['مذاکره موفق'] if 'مذاکره موفق' in i else 0 for i in data_list]
+            y30 = [i['مدیریت زمان'] if 'مدیریت زمان' in i else 0 for i in data_list]
+            # name_list = data_source.data['name'].tolist()
+            name_list = [i['name'] for i in data_list]
+            my_data = {'name_list': name_list,
+                       'score': y,
+                       'number of voice': y2,
+                       'بیان جملات شروع': y3,
+                       'به کار بردن نام مشتری': y4,
+                       'لحن صحبت با مشتری': y5,
+                       'احترام به مشتری': y6,
+                       'مدیریت خشم': y7,
+                       'تعامل مناسب با مشتری': y8,
+                       'عدم استفاده از افعال منفی': y9,
+                       'گوش دادن موثر': y10,
+                       'قطع صحبت مشتری': y11,
+                       'راهنمایی صحیح مشتری': y12,
+                       'ثبت صحیح شکایت': y13,
+                       'آشنایی با اپلیکیشن و سایت': y14,
+                       'آشنایی با پنل اکالا': y15,
+                       'hold مناسب': y16,
+                       'hold رعایت قانون': y17,
+                       'ارجاع بی مورد بی واحد دیگر': y18,
+                       'بیان مسائل غیر ضروری': y19,
+                       'مدیریت زمان مکالمه/سکوت بی مورد': y20,
+                       'مذاکره': y21,
+                       'بیان جملات پایانی': y22,
+                       'مرجوعی صحیح': y23,
+                       'پیشنهاد کالا پرتخفیف': y24,
+                       'محصول شناسی': y25,
+                       'اعلام قیمت نهایی فاکتور': y26,
+                       'عدم پیشنهاد کنسلی': y27,
+                       'پیشنهاد کد تخفیف برای سفارش ارگانیک': y28,
+                       'مذاکره موفق': y29,
+                       'مدیریت زمان': y30,
 
 
 
-                   }
-        cols = ['green', 'yellow']
-        y_list = ['score', 'number of voice', 'بیان جملات شروع', 'به کار بردن نام مشتری', 'لحن صحبت با مشتری',
-                  'احترام به مشتری',
-                  'مدیریت خشم', 'تعامل مناسب با مشتری', 'عدم استفاده از افعال منفی', 'گوش دادن موثر', 'قطع صحبت مشتری',
-                  'راهنمایی صحیح مشتری',
-                  'ثبت صحیح شکایت', 'آشنایی با اپلیکیشن و سایت', 'آشنایی با پنل اکالا', 'hold مناسب',
-                  'hold رعایت قانون',
-                  'ارجاع بی مورد بی واحد دیگر',
-                  'بیان مسائل غیر ضروری', 'مدیریت زمان مکالمه/سکوت بی مورد', 'مذاکره', 'بیان جملات پایانی',
-                  'مرجوعی صحیح',
-                  'پیشنهاد کالا پرتخفیف', 'محصول شناسی', 'اعلام قیمت نهایی فاکتور', 'عدم پیشنهاد کنسلی',
-                  'پیشنهاد کد تخفیف برای سفارش ارگانیک', 'مذاکره موفق', 'مدیریت زمان']
-        palette = [cc.rainbow[i * 15] for i in range(17)]
-        x = [(name, data) for name in name_list for data in y_list]
-        counts = sum(zip(my_data['score'], my_data['number of voice'], my_data['بیان جملات شروع'],
-                         my_data['به کار بردن نام مشتری'], my_data['لحن صحبت با مشتری'],
-                         my_data['احترام به مشتری'],
-                         my_data['مدیریت خشم'], my_data['تعامل مناسب با مشتری'],
-                         my_data['عدم استفاده از افعال منفی'],
-                         my_data['گوش دادن موثر'], my_data['قطع صحبت مشتری'],
-                         my_data['راهنمایی صحیح مشتری'],
-                         my_data['ثبت صحیح شکایت'], my_data['آشنایی با اپلیکیشن و سایت'],
-                         my_data['آشنایی با پنل اکالا'],
-                         my_data['hold مناسب'], my_data['hold رعایت قانون'],
-                         my_data['ارجاع بی مورد بی واحد دیگر'],
-                         my_data['بیان مسائل غیر ضروری'], my_data['مدیریت زمان مکالمه/سکوت بی مورد'],
-                         my_data['مذاکره'],
-                         my_data['بیان جملات پایانی'], my_data['مرجوعی صحیح'], my_data['پیشنهاد کالا پرتخفیف'],
-                         my_data['محصول شناسی'], my_data['اعلام قیمت نهایی فاکتور'], my_data['عدم پیشنهاد کنسلی'],
-                         my_data['پیشنهاد کد تخفیف برای سفارش ارگانیک'], my_data['مذاکره موفق'],
-                         my_data['مدیریت زمان']), ())
-        source = ColumnDataSource(data=dict(x=x, counts=counts))
-        h = HoverTool()
-        h.tooltips = [
-            ("مقدار", "@counts"),
-        ]
-        my_colour = ("#5e4fa2", "#3288bd", "#66c2a5", "#abdda4", "#e6f598", "#ffffbf", "#fee08b", "#fdae61", "#f46d43",
-                     "#d53e4f", "#9e0142", '#000003', '#160B39', '#410967', '#6A176E', '#932567', '#BA3655', '#DC5039',
-                     '#F2751A', '#FBA40A', '#F6D542', '#FCFEA4', '#F5FFFA', '#FFE4E1', '#FFE4B5', '#808000', '#EEE8AA',
-                     '#C71585', '#FF4500', '#DDA0DD','#48D1CC', '#AFEEEE')
+                       }
+            cols = ['green', 'yellow']
+            y_list = ['score', 'number of voice', 'بیان جملات شروع', 'به کار بردن نام مشتری', 'لحن صحبت با مشتری',
+                      'احترام به مشتری',
+                      'مدیریت خشم', 'تعامل مناسب با مشتری', 'عدم استفاده از افعال منفی', 'گوش دادن موثر', 'قطع صحبت مشتری',
+                      'راهنمایی صحیح مشتری',
+                      'ثبت صحیح شکایت', 'آشنایی با اپلیکیشن و سایت', 'آشنایی با پنل اکالا', 'hold مناسب',
+                      'hold رعایت قانون',
+                      'ارجاع بی مورد بی واحد دیگر',
+                      'بیان مسائل غیر ضروری', 'مدیریت زمان مکالمه/سکوت بی مورد', 'مذاکره', 'بیان جملات پایانی',
+                      'مرجوعی صحیح',
+                      'پیشنهاد کالا پرتخفیف', 'محصول شناسی', 'اعلام قیمت نهایی فاکتور', 'عدم پیشنهاد کنسلی',
+                      'پیشنهاد کد تخفیف برای سفارش ارگانیک', 'مذاکره موفق', 'مدیریت زمان']
+            palette = [cc.rainbow[i * 15] for i in range(17)]
+            x = [(name, data) for name in name_list for data in y_list]
+            counts = sum(zip(my_data['score'], my_data['number of voice'], my_data['بیان جملات شروع'],
+                             my_data['به کار بردن نام مشتری'], my_data['لحن صحبت با مشتری'],
+                             my_data['احترام به مشتری'],
+                             my_data['مدیریت خشم'], my_data['تعامل مناسب با مشتری'],
+                             my_data['عدم استفاده از افعال منفی'],
+                             my_data['گوش دادن موثر'], my_data['قطع صحبت مشتری'],
+                             my_data['راهنمایی صحیح مشتری'],
+                             my_data['ثبت صحیح شکایت'], my_data['آشنایی با اپلیکیشن و سایت'],
+                             my_data['آشنایی با پنل اکالا'],
+                             my_data['hold مناسب'], my_data['hold رعایت قانون'],
+                             my_data['ارجاع بی مورد بی واحد دیگر'],
+                             my_data['بیان مسائل غیر ضروری'], my_data['مدیریت زمان مکالمه/سکوت بی مورد'],
+                             my_data['مذاکره'],
+                             my_data['بیان جملات پایانی'], my_data['مرجوعی صحیح'], my_data['پیشنهاد کالا پرتخفیف'],
+                             my_data['محصول شناسی'], my_data['اعلام قیمت نهایی فاکتور'], my_data['عدم پیشنهاد کنسلی'],
+                             my_data['پیشنهاد کد تخفیف برای سفارش ارگانیک'], my_data['مذاکره موفق'],
+                             my_data['مدیریت زمان']), ())
+            source = ColumnDataSource(data=dict(x=x, counts=counts))
+            h = HoverTool()
+            h.tooltips = [
+                ("مقدار", "@counts"),
+            ]
+            my_colour = ("#5e4fa2", "#3288bd", "#66c2a5", "#abdda4", "#e6f598", "#ffffbf", "#fee08b", "#fdae61", "#f46d43",
+                         "#d53e4f", "#9e0142", '#000003', '#160B39', '#410967', '#6A176E', '#932567', '#BA3655', '#DC5039',
+                         '#F2751A', '#FBA40A', '#F6D542', '#FCFEA4', '#F5FFFA', '#FFE4E1', '#FFE4B5', '#808000', '#EEE8AA',
+                         '#C71585', '#FF4500', '#DDA0DD','#48D1CC', '#AFEEEE')
 
-        p = figure(x_range=FactorRange(*x))
-        p.vbar(x='x', top='counts', width=0.9, source=source,
-               fill_color=factor_cmap('x', palette=my_colour, factors=y_list, start=1, end=2)
-               )
-        # q = figure(x_range=name_list)
-        # q.vbar_stack(y_list, x='name_list', source=my_data,color=cols, width=0.5,
-        #              legend_label=y_list)
-        operators = Agent.objects.all()
-        number_of_operator = len([i for i in operators if i.agent.agent])
-        p.y_range.start = 0
-        p.x_range.range_padding = 0.1
-        p.xaxis.major_label_orientation = 1
-        p.xgrid.grid_line_color = None
-        p.add_tools(h)
-        p.plot_width = number_of_operator * 600
-        script, div = components(p)
-        # show(p)
-        # show(q)
-        return render(request, 'QC/bokeh.html', {'script': script, 'div': div})
-    return HttpResponse('<h2>There is no voice yet in this month</h2>')
+            p = figure(x_range=FactorRange(*x))
+            p.vbar(x='x', top='counts', width=0.9, source=source,
+                   fill_color=factor_cmap('x', palette=my_colour, factors=y_list, start=1, end=2)
+                   )
+            # q = figure(x_range=name_list)
+            # q.vbar_stack(y_list, x='name_list', source=my_data,color=cols, width=0.5,
+            #              legend_label=y_list)
+            operators = Agent.objects.all()
+            number_of_operator = len([i for i in operators if i.agent.agent])
+            p.y_range.start = 0
+            p.x_range.range_padding = 0.1
+            p.xaxis.major_label_orientation = 1
+            p.xgrid.grid_line_color = None
+            p.add_tools(h)
+            p.plot_width = number_of_operator * 600
+            script, div = components(p)
+            # show(p)
+            # show(q)
+            return render(request, 'QC/bokeh.html', {'script': script, 'div': div})
+        return HttpResponse('<h2>There is no voice during this time</h2>')
+    return render(request, 'QC/plot.html', {})
 
 
 @login_required(login_url='login')

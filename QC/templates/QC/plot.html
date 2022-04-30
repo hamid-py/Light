@@ -1,0 +1,15 @@
+{% extends 'QC/base.html' %}
+
+{% block content%}
+<form action="{%url 'plot'%}" method="POST">
+    {% csrf_token %}
+      <label for="start">start</label><br>
+      <input type="datetime-local" value="start" name="start" id="start"><br><br>
+      <label for="end">end</label><br>
+      <input type="datetime-local" value="end" name="end" id="end"><br><br>
+  <input type="submit" value="Submit" class="btn btn-success">
+</form>
+
+            <br>
+<a href="{%url 'qc'%}"  class="btn btn-primary active" role="button">Home</a>
+{% endblock %}

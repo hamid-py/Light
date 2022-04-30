@@ -17,6 +17,6 @@ urlpatterns = [
     path('extra/', views.extra_voice, name='extra'),
     path('complete/<int:pk>', views.complete_extra_voice, name='complete'),
     path('outscore/', views.output_qc_score, name='outscore'),
-    path('refscore/', views.ref_qc_score, name='refscore')
+    path('refscore/', views.ref_qc_score, name='refscore'),
 
 ]

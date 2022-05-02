@@ -4,7 +4,7 @@
 
 {% block content%}
 
-<div class="container" style="border-style: solid;">
+<!--<div class="container" style="border-style: solid;">-->
 <div class="container-fluid">
 <div class="row content" dir="rtl">
     <div class="col-sm-3 sidenav">
@@ -32,30 +32,27 @@
             <br>
 <a href="{%url 'agent'%}"  class="btn btn-primary active" role="button">Home</a>
     </div>
-<div class="col-sm-4" style="background-color:white">
-    <table class="table">
-         <thead>
-      <tr>
+<div class="col-sm-5" style="background-color:white">
 
 
 {%for i in each%}
-          </tr>
-    <tbody>
-    <tr>
     {%for j in i%}
 
         <li class="list-group-item">{{j}}</li>
 
     {%endfor%}
-</tr>
-    </tbody>
         <li class="list-group-item list-group-item-dark"></li>
+    <li class="list-group-item list-group-item-dark"></li>
+    <li class="list-group-item list-group-item-dark"></li>
+    <li class="list-group-item list-group-item-dark"></li>
 
 {%endfor%}
 
+
     </div>
 </div>
     </div>
-</div>
+<!--</div>-->
+
 
 {% endblock %}

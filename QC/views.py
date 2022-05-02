@@ -44,7 +44,7 @@ labels = {
     'ref_respect_to_customer': _("احترام به مشتری"),
     'ref_effective_listening': _("گوش دادن موثر"),
     'ref_interrupt_customer_talk': _("قطع صحبت مشتری"),
-    'ref_correct_customer_guidance': _("راهنمایی صحیح مشتری "),
+    'ref_correct_customer_guidance': _("راهنمایی صحیح مشتری"),
     'ref_familiarity_with_okala_panel': _("آشنایی با پنل اکالا"),
     'ref_correct_reference': _("مرجوعی صحیح"),
     'ref_final_sentences': _("بیان جملات پایانی"),
@@ -493,7 +493,7 @@ def excel_report(request):
             worksheet.write(f'Z{index + 2}', not (call_duration_management))
             worksheet.write(f'AA{index + 2}', not (negotiation))
             worksheet.write(f'AB{index + 2}', not (final_sentences))
-            worksheet.write(f'AC{index + 2}', )
+            # worksheet.write(f'AC{index + 2}', )
             #RESULT
             worksheet.write(f'BH{index + 2}', score_from_hundred)
             worksheet.write(f'BI{index + 2}', '')
@@ -592,7 +592,7 @@ def plot(request):
             operator_data['voice'] = len(voices)
             if voices:
                 for j in voices:
-                    score_list.append(j.voice.score)
+                    score_list.append(j.voice.get_score_from_hundred)
                 operator_data['score'] = score_list
                 data_list.append(operator_data)
         if data_list:
@@ -721,7 +721,8 @@ def plot(request):
             # q.vbar_stack(y_list, x='name_list', source=my_data,color=cols, width=0.5,
             #              legend_label=y_list)
             operators = Agent.objects.all()
-            number_of_operator = len([i for i in operators if i.agent.agent])
+            # number_of_operator = len([i for i in operators if i.agent.agent])
+            number_of_operator = len(name_list)
             p.y_range.start = 0
             p.x_range.range_padding = 0.1
             p.xaxis.major_label_orientation = 1

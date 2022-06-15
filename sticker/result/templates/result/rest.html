@@ -1,0 +1,53 @@
+{% extends 'QC/base.html' %}
+
+
+
+{% block content %}
+<br><br>
+
+{%if status%}
+  <div class="container">
+           <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+<form action="{%url 'start_rest'%}" method='POST'>
+    {%csrf_token%}
+ <p> {{user}} </p>
+    <br>
+    <input type='submit' value="start" class="btn btn-success btn-lg">
+
+</form>
+           </div></div>
+
+{%endif%}
+
+{%if group_list%}
+  <div class="container">
+           <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+<h4>following people are in rest:</h4>
+{%for user in group_list%}
+
+<li>{{user}}</li>
+{%endfor%}
+{%endif%}
+    </div>
+  </div>
+
+<br>
+<br>
+
+  <div class="container">
+           <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+   <a href="{%url 'home'%}"  class="btn btn-light" role="button">Home</a>
+    </div>
+  </div>
+
+    <br><br><br><br>
+{% endblock %}

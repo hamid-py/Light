@@ -1,0 +1,75 @@
+{% extends 'QC/base.html' %}
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+<br><br>
+
+{%if rest%}
+<div class="container">
+                       <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+<h3>following people are in rest:</h3>
+{%endif%}
+{%for user in rest%}
+
+<li>{{user}}</li>
+  {%endfor%}
+</div>
+  </div>
+
+
+
+
+<div class="container">
+                       <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+      <h2>{{i.user}}</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>user</th>
+        <th>Total rest time:</th>
+        <th>Total error time</th>
+          <th>number_of_rest</th>
+        <th>number_of_error</th>
+      </tr>
+    </thead>
+      {%for i in history%}
+    <tbody>
+      <tr>
+        <td>{{i.user}}</td>
+        <td>{{i.total_seconds_min}} minutes and {{i.total_seconds_seconds}}seconds</td>
+        <td>{{i.total_error_min}} minutes and {{i.total_error_seconds}}seconds</td>
+          <td>{{i.number_of_rest}}</td>
+        <td>{{i.number_of_error}}</td>
+      </tr>
+      </thead>
+         </tr>
+    </tbody>
+
+
+
+      {%endfor%}
+      </table>
+</div>
+</div>
+</div>
+<br>
+<br>
+<div class="container">
+                       <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+   <a href="{%url 'home'%}"  class="btn btn-light" role="button">Home</a>
+  <a href="{% url 'excel' %}" class="btn btn-light" role="button">Excel</a>
+  </div>
+</div>
+   <br><br><br><br>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'QC/base.html'%}
+{% load crispy_forms_tags %}
+
+{% block content%}
+<br>
+<div class="form-group">
+    <form method="POST">
+
+        {%csrf_token%}
+        {{form.as_p}}
+        <input type="submit", value="Log IN" class="btn btn-success">
+
+    </form>
+</div>
+<hr class="bg-danger border-2 border-top border-dark">
+<ul class="list-group">
+<li class="list-group-item">
+    username:admin<br>
+    pass:123456qwert
+</li>
+    </ul>
+<ul class="list-group">
+<li class="list-group-item">
+    username: agent<br>
+    pass: 123456qwert
+</li>
+</ul>
+<br><br>
+<br><br><br><br>
+{% endblock %}
+
+

@@ -1,0 +1,53 @@
+{% extends 'QC/base.html' %}
+
+
+
+{% block content %}
+<br><br>
+
+<div class="container">
+               <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+
+    {%if group_list%}
+
+{%for group in group_list%}
+
+    <ul><p><a href="{%url 'update_principal' group.id%}">{{group}}</a></p>
+    {%for user in group.user.all%}
+            {%if user in  request.online_now%}
+
+
+
+
+        <li>{{user}}</li>
+        {%endif%}
+
+    {%endfor%}
+       </ul>
+    <br>
+{%endfor%}
+</ul>
+{%else%}
+<p>There is no group yet</p>
+{%endif%}
+</div>
+</div>
+
+<br>
+<br>
+<div class="container">
+               <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+    <a href="{%url 'home'%}"  class="btn btn-light" role="button">Home</a>
+</div>
+</div>
+
+
+
+    <br><br><br><br>
+{% endblock %}

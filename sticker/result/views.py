@@ -22,31 +22,35 @@ from django.views.generic.list import ListView
 from .models import CustomUser, Group, Membership, Principal, AgentHistory, StartRest, EndRest
 from django.shortcuts import render
 from .forms import PrincipalForm, MembershipForm, PasswordChangeCustomForm
-
-IN_rest_list = []
-OUT_rest_list = []
-CRM_rest_list = []
+from QC.models import QcOperator
 
 
 class LoginAdmin(LoginView):
     template_name = 'result/Login.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().dispatch(request, *args, **kwargs)
+
 
 def change_password(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, _('Your password was successfully updated!'))
-            return redirect('/')
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = PasswordChangeForm(request.user, request.POST)
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, _('Your password was successfully updated!'))
+                return redirect('/')
+            else:
+                messages.error(request, _('Please correct the error below.'))
         else:
-            messages.error(request, _('Please correct the error below.'))
-    else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'result/change_password.html', {
-        'form': form
-    })
+            form = PasswordChangeForm(request.user)
+        return render(request, 'result/change_password.html', {
+            'form': form
+        })
+    return redirect('login')
 
 
 class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -158,9 +162,17 @@ def update_membership_view(request, pk):
     return HttpResponse("<p><h2>You don't have permission to access this page<h2></p>")
 
 
+IN_rest_list = []
+OUT_rest_list = []
+CRM_rest_list = []
+
+from .tasks import rest_start
+
+
 @login_required(login_url='login')
 @transaction.atomic
 def start_rest(request):
+    rest_start.apply_async(args=[10, 70])
     context = {'status': True}
     user = CustomUser.objects.get(user=request.user.id)
 
@@ -168,12 +180,11 @@ def start_rest(request):
     group = user.group_user.last().group_type
     rest_start_list = StartRest.objects.filter(in_rest_flag=1)
     rest_start_user = [i.user for i in rest_start_list]
-    # print(rest_start_list, 'start list++1')
-    # print(IN_rest_list+OUT_rest_list+CRM_rest_list, '3list together ++2')
     if IN_rest_list:
         for i in IN_rest_list:
             if i not in rest_start_user:
                 IN_rest_list.remove(i)
+
     if OUT_rest_list:
         for i in OUT_rest_list:
             if i not in rest_start_user:
@@ -185,8 +196,7 @@ def start_rest(request):
     for i in rest_start_list:
         if i.user not in IN_rest_list + OUT_rest_list + CRM_rest_list:
             i.delete()
-    # print(rest_start_list, 'start list++3')
-    # print(rest_start_user, 'rest start user++4')
+
     if group == 'IN':
         group_list_name = IN_rest_list
     elif group == 'OUT':
@@ -298,9 +308,6 @@ class AgentHistoryView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         if int(user.position) > 0:
             return True
         return False
-
-
-from QC.models import QcOperator
 
 
 @login_required(login_url='login')

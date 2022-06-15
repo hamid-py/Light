@@ -1,0 +1,89 @@
+{% extends 'QC/base.html' %}
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+<br><br>
+
+    <div class="container">
+                            <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+
+<h2>supervisor</h2>
+
+{%for user in customuser_list%}
+
+
+    {%if user.position == '3'%}
+
+
+
+    <li> {{user}}</li>
+    {%endif%}
+
+
+
+
+{%endfor%}
+
+<h2>Leader</h2>
+{%for user in customuser_list%}
+
+    {%if user.position == '2'%}
+
+
+
+    <li> {{user}}</li>
+    {%endif%}
+
+
+
+
+{%endfor%}
+
+<h2>Team Leader</h2>
+{%for user in customuser_list%}
+
+    {%if user.position == '1'%}
+
+
+
+    <li> {{user}}</li>
+    {%endif%}
+
+
+
+
+{%endfor%}
+
+<h2>Operator</h2>
+{%for user in customuser_list%}
+
+    {%if user.position == '0'%}
+
+
+
+    <li> {{user}}</li>
+    {%endif%}
+
+
+
+
+{%endfor%}
+                            </div></div>
+<br>
+<br>
+    <div class="container">
+                            <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+   <a href="{%url 'home'%}"  class="btn btn-light" role="button">Home</a>
+        </div>
+    </div>
+
+   <br><br><br><br>
+{% endblock %}

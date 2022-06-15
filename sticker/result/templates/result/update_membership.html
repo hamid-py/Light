@@ -1,0 +1,38 @@
+
+{% extends 'QC/base.html' %}
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+<br><br>
+
+
+
+<div class="container">
+                     <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+<form method="POST" action="{%url 'update_membership' pk%}">
+    {%csrf_token%}
+    {{form}}
+    <br>
+    <br>
+    <input value="update" type="submit" class="btn btn-success">
+</form>
+</div>
+</div>
+<br>
+<br>
+<div class="container">
+                     <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+   <a href="{%url 'membership'%}"  class="btn btn-light" role="button">Home</a>
+    </div>
+</div>
+
+    <br><br><br><br>
+{% endblock %}

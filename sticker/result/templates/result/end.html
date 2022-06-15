@@ -1,0 +1,38 @@
+{% extends 'QC/base.html' %}
+
+
+
+{% block content %}
+<br><br>
+  <div class="container">
+           <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+
+{%if status%}
+
+
+<form action="{%url 'end_rest' user.id%}" method='POST'>
+    {%csrf_token%}
+
+    <p>{{user}} </p>
+    <br>
+    <input type='submit' value="stop" class="btn btn-danger btn-lg">
+
+</form>
+{%endif%}
+</div>
+           </div>
+<br>
+<br>
+  <div class="container">
+           <div style="background-color: lightgrey;
+  border: 15px solid green;
+  padding: 10px;
+  margin: 00px;">
+   <a href="{%url 'home'%}"  class="btn btn-light" role="button">Home</a>
+    </div>
+  </div>
+    <br><br><br><br>
+{% endblock %}

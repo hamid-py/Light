@@ -16,42 +16,6 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 
 
-# class CustomUserManager(BaseUserManager):
-#     """
-#     Custom user model manager where email is the unique identifiers
-#     for authentication instead of usernames.
-#     """
-#
-#     def create_superuser(self, email, password, **extra_fields):
-#         """
-#         Create and save a User with the given email and password.
-#         """
-#         if not email:
-#             raise ValueError(_('The Email must be set'))
-#         email = self.normalize_email(email)
-#         user = self.model(email=email, **extra_fields)
-#         user.set_password(password)
-#         user.save()
-#         return user
-#
-#
-# class CustomUser(AbstractBaseUser, PermissionsMixin):
-#     is_superuser = models.BooleanField(
-#         _('superuser status'),
-#         default=False, )
-#
-#     email = models.EmailField(_('email address'), unique=True)
-#     is_staff = models.BooleanField(default=True)
-#     is_active = models.BooleanField(default=True)
-#     date_joined = models.DateTimeField(default=timezone.now)
-#
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = []
-#
-#     objects = CustomUserManager()
-#
-#     def __str__(self):
-#         return self.email
 
 class CustomUser(models.Model):
     operator = '0'
@@ -65,12 +29,10 @@ class CustomUser(models.Model):
         (supervisor, 'supervisor'),
         (head_supervisor, 'head_supervisor')
     )
-    # username = models.CharField(max_length=50)
-    # password = models.CharField(max_length=50)
+  
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     mobile_phone = models.IntegerField(null=True)
     position = models.CharField(choices=position_choice, max_length=50, default=operator)
-    # group = models.ForeignKey(Group, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
